@@ -14,30 +14,13 @@
     </header>
 
     <main>
-        <div id="kinoplayertop" data-kinopoisk="1178137"></div>
+	    <div data-kinobox="auto" data-kinopoisk="1178137"></div>
     </main>
 
 
-    <script>
-        function getParameterByName(name) {
-            const url = window.location.href;
-            const nameEscaped = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + nameEscaped + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
-        }
+ <!-- Пример с data-атрибутом -->
+<script src="https://kinobox.tv/kinobox.min.js"></script>
 
-        const id = getParameterByName('id');
-        if (id) {
-            const playerElement = document.getElementById('kinoplayertop');
-            playerElement.setAttribute('data-kinopoisk', id);
-        }
-
-        const script = document.createElement('script');
-        script.src = '//kinoplayer.top/top.js';
-        document.body.appendChild(script);
-    </script>
+	
 </body>
 </html>
