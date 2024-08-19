@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ваш фильм</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
+        <style>
         body {
     margin: 0;
     padding: 0;
@@ -77,7 +77,7 @@ main {
 </head>
 <body>
     <header>
-        <h1 id="title">Название фильма</h1>
+        <h1 id="title">Название фильма2</h1>
         <p id="description">Краткое описание фильма, сюжет или другая информация.</p>
     </header>
 
@@ -113,17 +113,14 @@ main {
         // Находим элемент плеера
         const playerElement = document.querySelector('[data-kinobox="auto"]');
 
-        // Устанавливаем значения data-атрибутов, если параметры присутствуют
+        // Устанавливаем значение первого найденного параметра
         if (kp_id) {
             playerElement.setAttribute('data-kinopoisk', kp_id);
-        }
-        if (imdb_id) {
+        } else if (imdb_id) {
             playerElement.setAttribute('data-imdb', imdb_id);
-        }
-        if (tmdb_id) {
+        } else if (tmdb_id) {
             playerElement.setAttribute('data-tmdb', tmdb_id);
-        }
-        if (title) {
+        } else if (title) {
             playerElement.setAttribute('data-title', title);
         }
 
@@ -134,3 +131,4 @@ main {
     </script>
 </body>
 </html>
+
