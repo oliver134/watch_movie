@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ваш фильм</title>
+    <title>Kinobox Player</title>
     <style>
         body {
             margin: 0;
@@ -94,108 +94,51 @@
 </head>
 <body>
     <header>
-        <h1 id="title">Название фильма7</h1>
-        <p id="description">Краткое описание фильма, сюжет или другая информация.</p>
+        <h1 id="title">Kinobox Player</h1>
+        <p id="description">Watch your favorite movies with Kinobox.</p>
     </header>
-    
+
     <main>
-        <!-- Плеер с data-атрибутами -->
-        <div 
-            id="player"
-            data-kinobox="auto" 
-            data-kinopoisk="" 
-            data-imdb="" 
-            data-tmdb="" 
-            data-title="">
-        </div>
+        <!-- Плеер -->
+        <div id="kinobox-player" data-kinobox="auto"></div>
     </main>
 
     <footer>
-        <button onclick="setPlayerParam('kp_id', '1178137')">Kinopoisk</button>
-        <button onclick="setPlayerParam('imdb', 'tt0111161')">IMDb</button>
-        <button onclick="setPlayerParam('tmdb', '278')">TMDb</button>
-        <button onclick="setPlayerParam('title', 'The Shawshank Redemption')">Title</button>
+        <button>Play</button>
+        <button>Stop</button>
     </footer>
 
     <script>
-
-// Функция для получения значения параметра из URL
-function getParameterByName(name) {
-    let url = new URL(window.location.href);
-    let paramValue = url.searchParams.get(name);
-    return paramValue;
-}
-
-// Получаем значение kp_id
-let kpId = getParameterByName('kp_id');
-
-// Выводим значение kp_id в текст на странице
-if (kpId) {
-    document.body.innerHTML += `<p>Фильм ID: ${kpId}</p>`;
-} else {
-    document.body.innerHTML += "<p>ID не найден</p>";
-}
-
-
-
-
-
-
-
-
-
-
-        
         // Функция для получения значения параметра из URL
         function getParameterByName(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+            let url = new URL(window.location.href);
+            return url.searchParams.get(name);
         }
 
-        // Функция для установки параметров плеера
-        function setPlayerParam(param, value) {
-            const playerElement = document.getElementById('player');
-            playerElement.setAttribute(`data-${param}`, value);
+        // Проверяем параметры
+        let imdbId = getParameterByName('imdb_id');
+        let kpId = getParameterByName('kp_id');
+        let tmdbId = getParameterByName('tmdb_id');
+        let title = getParameterByName('title');
 
-            // Удаляем другие атрибуты
-            ['kinopoisk', 'imdb', 'tmdb', 'title'].forEach(attr => {
-                if (attr !== param) playerElement.setAttribute(`data-${attr}`, '');
-            });
+        // Получаем элемент плеера по его id или классу
+        let player = document.getElementById('kinobox-player');
 
-            // Перезагрузка плеера
-            reloadPlayer();
+        // Добавляем нужный атрибут в плеер на основе параметра
+        if (imdbId) {
+            player.setAttribute('data-imdb', imdbId);
+        } else if (kpId) {
+            player.setAttribute('data-kp', kpId);
+        } else if (tmdbId) {
+            player.setAttribute('data-tmdb', tmdbId);
+        } else if (title) {
+            player.setAttribute('data-title', title);
+        } else {
+            console.log("Не найдено ни одного подходящего параметра.");
         }
 
-        // Функция для перезагрузки плеера
-        function reloadPlayer() {
-            const existingScript = document.querySelector('script[src="https://kinobox.tv/kinobox.min.js"]');
-            if (existingScript) existingScript.remove();
-
-            const script = document.createElement('script');
-            script.src = 'https://kinobox.tv/kinobox.min.js';
-            document.body.appendChild(script);
-        }
-
-        // Инициализация плеера на основе GET параметров
-        window.onload = function() {
-            const kp_id = getParameterByName('kp_id');
-            const imdb_id = getParameterByName('imdb');
-            const tmdb_id = getParameterByName('tmdb');
-            const title = getParameterByName('title');
-
-            if (kp_id) {
-                setPlayerParam('kinopoisk', kp_id);
-            } else if (imdb_id) {
-                setPlayerParam('imdb', imdb_id);
-            } else if (tmdb_id) {
-                setPlayerParam('tmdb', tmdb_id);
-            } else if (title) {
-                setPlayerParam('title', title);
-            } else {
-                // Если ни один параметр не указан, по умолчанию загрузить по kp_id
-                setPlayerParam('kinopoisk', '1178137');
-            }
-        }
+        // Инициализация плеера (например)
+        // Kinobox.init(player);
     </script>
 </body>
 </html>
