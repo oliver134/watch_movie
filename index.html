@@ -94,14 +94,11 @@
 </head>
 <body>
     <header>
-        <h1 id="title">Kinobox Player3</h1>
+        <h1 id="title">Kinobox Playerыаываы3</h1>
         <p id="description">Watch your favorite movies with Kinobox.</p>
     </header>
 
-    <main>
-        <!-- Плеер -->
-        
-    </main>
+
 
     <footer>
         <button>Play</button>
@@ -121,7 +118,11 @@ let kpId = getParameterByName('kp_id');
 
 // Выводим значение kp_id в текст на странице
 if (kpId) {
-    document.body.innerHTML += `<div id="kinobox-player" data-kinobox="auto" data-kinopoisk="${kpId}"></div>`;
+    document.body.innerHTML += `
+        <main>
+        <!-- Плеер -->
+        <div id="kinobox-player" data-kinobox="auto" data-kinopoisk="${kpId}"></div>
+    </main>`;
 } else {
     document.body.innerHTML += "<p>ID не найден</p>";
 }
