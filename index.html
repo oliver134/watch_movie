@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinobox Player</title>
+    <title>Кинопоиск Плеер</title>
     <style>
         body {
             margin: 0;
@@ -93,41 +93,46 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="title">Kinobox Player121213</h1>
-        <p id="description">Watch your favorite movies with Kinobox.</p>
-    </header>
 
+<header>
+    <h1 id="title">Кинопоиск Плеер111</h1>
+    <p id="description">Введите ID фильма в URL для просмотра через Кинопоиск плеер.</p>
+</header>
 
+<main>
+    <!-- Пример с data-атрибутом -->
+    <div data-kinobox="auto" data-kinopoisk="ID_ФИЛЬМА"></div>
+</main>
 
-    <footer>
-        <button>Play</button>
-        <button>Stop</button>
-    </footer>
-<script src="https://kinobox.tv/kinobox.min.js"></script>
-    <script>
-   // Функция для получения значения параметра из URL
-function getParameterByName(name) {
-    let url = new URL(window.location.href);
-    let paramValue = url.searchParams.get(name);
-    return paramValue;
-}
+<footer>
+    <p>Здесь могут быть другие кнопки или информация</p>
+</footer>
 
-// Получаем значение kp_id
-let kpId = getParameterByName('kp_id');
+<script>
+    // Функция для получения значения параметра из URL
+    function getParameterByName(name) {
+        let url = new URL(window.location.href);
+        let paramValue = url.searchParams.get(name);
+        return paramValue;
+    }
 
-// Выводим значение kp_id в текст на странице
-if (kpId) {
-    document.body.innerHTML += `
-        <main>
-        <!-- Плеер -->
-        <div id="kinobox-player" data-kinobox="auto" data-kinopoisk="${kpId}"></div>
-    </main>`;
-} else {
-    document.body.innerHTML += "<p>ID не найден</p>";
-}
+    // Получаем значение kp_id
+    let kpId = getParameterByName('kp_id');
 
-    </script>
-    
+    // Проверяем наличие kp_id и добавляем его в data-атрибут
+    let kinoboxDiv = document.querySelector('div[data-kinobox="auto"]');
+    if (kpId && kinoboxDiv) {
+        kinoboxDiv.setAttribute('data-kinopoisk', kpId);
+        document.body.innerHTML += `<p style="text-align: center;">Фильм ID: ${kpId}</p>`;
+    } else {
+        document.body.innerHTML += "<p style=\"text-align: center;\">ID не найден или div не существует</p>";
+    }
+
+    // Инициализация скрипта kinobox
+    let script = document.createElement('script');
+    script.src = "https://kinobox.tv/kinobox.min.js";
+    document.body.appendChild(script);
+</script>
+
 </body>
 </html>
