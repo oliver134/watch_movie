@@ -3,47 +3,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кинопоиск Плеер</title>
-
+    <title>Kinobox Player</title>
 </head>
 <body>
+    <div data-kinobox="auto" data-kinopoisk="ID_ФИЛЬМА"></div>
+    
+    <script src="https://kinobox.tv/kinobox.min.js"></script>
+    <script>
+        // Функция для получения значения параметра из URL
+        function getParameterByName(name) {
+            let url = new URL(window.location.href);
+            let paramValue = url.searchParams.get(name);
+            return paramValue;
+        }
 
-<header>
-    <h1 id="title">Кинопоиск Плеер645654</h1>
-    <p id="description">Введите ID фильма в URL для просмотра через Кинопоиск плеер.</p>
-</header>
+        // Получаем значение kp_id
+        let kpId = getParameterByName('kp_id');
 
-<main>
-    <!-- Пример с data-атрибутом -->
-<div class="kinobox_player"></div>
-<script src="https://kinobox.tv/kinobox.min.js"></script>
-</main>
-
-<footer>
-    <p>Здесь могут быть другие кнопки или информация</p>
-</footer>
-
-<script>
-// Функция для получения значения параметра из URL
-function getParameterByName(name) {
-    let url = new URL(window.location.href);
-    let paramValue = url.searchParams.get(name);
-    return paramValue;
-}
-
-// Получаем значение kp_id
-let kpId = getParameterByName('kp_id');
-
-// Выводим значение kp_id в текст на странице
-if (kpId) {
-    document.body.innerHTML += <p>Фильм ID: ${kpId}</p>;
-} else {
-    document.body.innerHTML += "<p>ID не найден</p>";
-}
-<!-- Пример с JavaScript -->
-
-kbox('.kinobox_player', {search: {kinopoisk: '${kpId}'}})
-</script>
-
+        // Проверяем, найден ли kp_id
+        if (kpId) {
+            // Заменяем значение в атрибуте data-kinopoisk
+            let kinoboxElement = document.querySelector('div[data-kinobox]');
+            if (kinoboxElement) {
+                kinoboxElement.setAttribute('data-kinopoisk', kpId);
+            }
+            
+            // Добавляем вывод на страницу
+            document.body.innerHTML += `<p>Фильм ID: ${kpId}</p>`;
+        } else {
+            document.body.innerHTML += "<p>ID не найден</p>";
+        }
+    </script>
 </body>
 </html>
