@@ -3,33 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kinobox Player</title>
+    <title>Kinobox Player1234567890</title>
 </head>
 <body>
-    <div data-kinobox="auto" data-kinopoisk="ID_ФИЛЬМА"></div>
+    <div data-kinobox="auto"></div>
     
     <script src="https://kinobox.tv/kinobox.min.js"></script>
     <script>
         // Функция для получения значения параметра из URL
         function getParameterByName(name) {
             let url = new URL(window.location.href);
-            let paramValue = url.searchParams.get(name);
-            return paramValue;
+            return url.searchParams.get(name);
         }
 
-        // Получаем значение kp_id
+        // Получаем значения параметров
         let kpId = getParameterByName('kp_id');
+        let imdbId = getParameterByName('imdb');
+        let tmdbId = getParameterByName('tmdb');
+        let title = getParameterByName('title');
 
-        // Проверяем, найден ли kp_id
-        if (kpId) {
-            // Заменяем значение в атрибуте data-kinopoisk
-            let kinoboxElement = document.querySelector('div[data-kinobox]');
-            if (kinoboxElement) {
-                kinoboxElement.setAttribute('data-kinopoisk', kpId);
-            }
-            
-            // Добавляем вывод на страницу
-            document.body.innerHTML += `<p>Фильм ID: ${kpId}</p>`;
+        // Найти элемент плеера
+        let kinoboxElement = document.querySelector('div[data-kinobox]');
+
+        // Проверка и установка соответствующего атрибута
+        if (kpId && kinoboxElement) {
+            kinoboxElement.setAttribute('data-kinopoisk', kpId);
+            document.body.innerHTML += `<p>Фильм ID (Kinopoisk): ${kpId}</p>`;
+        } else if (imdbId && kinoboxElement) {
+            kinoboxElement.setAttribute('data-imdb', imdbId);
+            document.body.innerHTML += `<p>Фильм ID (IMDb): ${imdbId}</p>`;
+        } else if (tmdbId && kinoboxElement) {
+            kinoboxElement.setAttribute('data-tmdb', tmdbId);
+            document.body.innerHTML += `<p>Фильм ID (TMDb): ${tmdbId}</p>`;
+        } else if (title && kinoboxElement) {
+            kinoboxElement.setAttribute('data-title', title);
+            document.body.innerHTML += `<p>Название фильма: ${title}</p>`;
         } else {
             document.body.innerHTML += "<p>ID не найден</p>";
         }
