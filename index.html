@@ -97,7 +97,7 @@
         <h1 id="title">Название фильма7</h1>
         <p id="description">Краткое описание фильма, сюжет или другая информация.</p>
     </header>
-
+    
     <main>
         <!-- Плеер с data-атрибутами -->
         <div 
@@ -118,6 +118,33 @@
     </footer>
 
     <script>
+
+// Функция для получения значения параметра из URL
+function getParameterByName(name) {
+    let url = new URL(window.location.href);
+    let paramValue = url.searchParams.get(name);
+    return paramValue;
+}
+
+// Получаем значение kp_id
+let kpId = getParameterByName('kp_id');
+
+// Устанавливаем заголовок страницы (title)
+if (kpId) {
+    document.title = `Фильм ID: ${kpId}`;
+} else {
+    document.title = "ID не найден";
+}
+
+
+
+
+
+
+
+
+
+        
         // Функция для получения значения параметра из URL
         function getParameterByName(name) {
             const urlParams = new URLSearchParams(window.location.search);
