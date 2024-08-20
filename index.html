@@ -129,12 +129,13 @@ function getParameterByName(name) {
 // Получаем значение kp_id
 let kpId = getParameterByName('kp_id');
 
-// Устанавливаем заголовок страницы (title)
+// Выводим значение kp_id в текст на странице
 if (kpId) {
-    document.title = `Фильм ID: ${kpId}`;
+    document.body.innerHTML += `<p>Фильм ID: ${kpId}</p>`;
 } else {
-    document.title = "ID не найден";
+    document.body.innerHTML += "<p>ID не найден</p>";
 }
+
 
 
 
