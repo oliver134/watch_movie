@@ -78,15 +78,23 @@
     </header>
   
 
-<div class="kinobox_player"></div>
-<script src="https://kinobox.tv/kinobox.min.js"></script>
+
+
+    
+<main>
+    <div class="kinobox_player" data-kinobox="auto"></div>
+</main>
+    <script src="https://kinobox.tv/kinobox.min.js"></script>
+
+
+
 <script>
     kbox('.kinobox_player', {
         search: { // Настройки поиска
             kinopoisk: '258687', // Поиск фильма по ID Кинопоиска
-            imdb: 'tt0816692', // Поиск фильма по IMDb Id
-            tmdb: '157336', // Поиск фильма по TMDB Id
-            title: 'Интерстеллар' // Поиск фильма по названию
+            imdb: '', // Поиск фильма по IMDb Id
+            tmdb: '', // Поиск фильма по TMDB Id
+            title: '' // Поиск фильма по названию
         },
         menu: { // Настройки меню
             enable: true, // Показывать меню
@@ -123,13 +131,7 @@
     });
 </script>
 
-
-
     
-<main>
-    <div data-kinobox="auto"></div>
-</main>
-    <script src="https://kinobox.tv/kinobox.min.js"></script>
     <script>
         // Функция для получения значения параметра из URL
         function getParameterByName(name) {
