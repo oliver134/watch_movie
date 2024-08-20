@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ваш фильм</title>
+    <title>Смотреть фильм</title>
     <style>
         body {
             margin: 0;
@@ -72,104 +72,54 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1 id="title">Название фильма1111</h1>
-        <p id="description">Краткое описание фильма, сюжет или другая информация.</p>
-    </header>
-  
+    <div id="movie-container">
+        <h1 id="title"></h1>
+        <h2 id="orig_title"></h2>
+        <div id="player" class="плеер"></div>
+    </div>
 
-<!-- Вставляете в место, где должны быть торренты --> 
-
-<div id="kinoplayertop" data-player="torrent" data-title="Инферно 2016"></div> 
-
-<script src="//kinoplayer.top/top.js"></script> 
-
-<!-- Вместо data-title="Названия" можно использовать data-kinopoisk="ID Kinopoisk" -->
-
-    
-<main>
-    <div class="kinobox_player" data-kinobox="auto"></div>
-</main>
-    <script src="https://kinobox.tv/kinobox.min.js"></script>
-
-
-
-<script>
-    kbox('.kinobox_player', {
-        search: { // Настройки поиска
-            kinopoisk: '258687', // Поиск фильма по ID Кинопоиска
-            imdb: '', // Поиск фильма по IMDb Id
-            tmdb: '', // Поиск фильма по TMDB Id
-            title: '' // Поиск фильма по названию
-        },
-        menu: { // Настройки меню
-            enable: true, // Показывать меню
-            default: 'menu_list', // Вид меню для стандартных устройств
-            mobile: 'menu_button', // Вид меню для мобильных устройств
-            format: '{N} :: {T} ({Q})', // Формат пункта меню
-            limit: 5, // Максимальное количество элементов в меню
-            open: false, // Открывать меню по умолчанию
-        },
-        notFoundMessage: 'Видео не найдено.', // Сообщение, если плееры не найдены
-        players: { // Настройки источников
-            alloha: { // Название
-                enable: true, // Включить
-                position: 1 // Позиция в меню
-            },
-            kodik: {
-                enable: false,
-                position: 2
-            },
-            // ...
-        },
-        params: { // Добавление дополнительных параметров в ссылку iframe
-            all: { // Добавление для всех источников
-                poster: 'https://example.org/poster.jpg', // Название параметра и его значение
-            },
-            alloha: { // Добавление для указанного источника
-                autoplay: 1 // Название параметра и его значение
-            },
-            kodik: {
-                hide_selectors: true
-            },
-            // ...
-        }
-    });
-</script>
-
-    
     <script>
-        // Функция для получения значения параметра из URL
-        function getParameterByName(name) {
-            let url = new URL(window.location.href);
-            return url.searchParams.get(name);
+        // Функция для получения параметров из URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
         }
 
-        // Получаем значения параметров
-        let kpId = getParameterByName('kp_id');
-        let imdbId = getParameterByName('imdb');
-        let tmdbId = getParameterByName('tmdb');
-        let title = getParameterByName('title');
+        // Получаем параметры kinopoisk_id или imdb из URL
+        const kp_id = getQueryParam('kp_id');
+        const imdb_id = getQueryParam('imdb');
 
-        // Найти элемент плеера
-        let kinoboxElement = document.querySelector('div[data-kinobox]');
-
-        // Проверка и установка соответствующего атрибута
-        if (kpId && kinoboxElement) {
-            kinoboxElement.setAttribute('data-kinopoisk', kpId);
-            document.body.innerHTML += `<p>Фильм ID (Kinopoisk): ${kpId}</p>`;
-        } else if (imdbId && kinoboxElement) {
-            kinoboxElement.setAttribute('data-imdb', imdbId);
-            document.body.innerHTML += `<p>Фильм ID (IMDb): ${imdbId}</p>`;
-        } else if (tmdbId && kinoboxElement) {
-            kinoboxElement.setAttribute('data-tmdb', tmdbId);
-            document.body.innerHTML += `<p>Фильм ID (TMDb): ${tmdbId}</p>`;
-        } else if (title && kinoboxElement) {
-            kinoboxElement.setAttribute('data-title', title);
-            document.body.innerHTML += `<p>Название фильма: ${title}</p>`;
-        } else {
-            document.body.innerHTML += "<p>ID не найден</p>";
+        // Формируем URL для запроса API
+        let apiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
+        if (kp_id) {
+            apiUrl += `&kinopoisk_id=${kp_id}`;
+        } else if (imdb_id) {
+            apiUrl += `&imdb_id=${imdb_id}`;
         }
+
+        // Функция для отображения данных фильма
+        function displayMovieData(data) {
+            const title = data.title || 'Название не найдено';
+            const origTitle = data.orig_title || 'Оригинальное название не найдено';
+            const iframe = data.iframe || '';
+
+            document.getElementById('title').innerText = title;
+            document.getElementById('orig_title').innerText = origTitle;
+            document.getElementById('player').innerHTML = iframe;
+        }
+
+        // Получение данных из API и отображение
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.result && data.data && data.data.length > 0) {
+                    displayMovieData(data.data[0]);
+                } else {
+                    console.error('Данные не найдены или произошла ошибка.');
+                }
+            })
+            .catch(error => console.error('Ошибка при получении данных:', error));
     </script>
 </body>
 </html>
+
