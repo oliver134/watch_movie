@@ -1,122 +1,115 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ваш фильм</title>
-    <link rel="stylesheet" href="styles.css">
-    
-        <style>
-   body {
-    margin: 0;
-    padding: 0;
-    font-family: Arial, sans-serif;
-    background-color: #121212;
-    color: #ffffff;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    box-sizing: border-box;
-}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-header {
-    text-align: center;
-    margin-bottom: 20px;
-    padding: 0 20px;
-}
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
 
-#title {
-    font-size: 2.5rem;
-    margin: 0;
-    color: #f5ba13;
-}
+        #title {
+            font-size: 2.5rem;
+            margin: 0;
+            color: #f5ba13;
+        }
 
-#description {
-    font-size: 1.2rem;
-    margin: 10px 0;
-    color: #b3b3b3;
-}
+        #description {
+            font-size: 1.2rem;
+            margin: 10px 0;
+            color: #b3b3b3;
+        }
 
-main {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 90%;
-    max-width: 800px;
-    padding: 20px;
-    background-color: #1e1e1e;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    box-sizing: border-box;
-}
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 90%;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-sizing: border-box;
+        }
 
-[data-kinobox="auto"] {
-    width: 100%;
-    height: 0;
-    padding-bottom: 56.25%; /* Соотношение сторон 16:9 */
-    background-color: #000; /* Черный фон до загрузки плеера */
-    border-radius: 8px;
-}
+        [data-kinobox="auto"] {
+            width: 100%;
+            height: 0;
+            padding-bottom: 56.25%; /* Соотношение сторон 16:9 */
+            background-color: #000; /* Черный фон до загрузки плеера */
+            border-radius: 8px;
+        }
 
-footer {
-    margin-top: 20px;
-    text-align: center;
-}
+        footer {
+            margin-top: 20px;
+            text-align: center;
+        }
 
-footer button {
-    background-color: #f5ba13;
-    color: #121212;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 5px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
+        footer button {
+            background-color: #f5ba13;
+            color: #121212;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-footer button:hover {
-    background-color: #e0a50c;
-}
+        footer button:hover {
+            background-color: #e0a50c;
+        }
 
-@media (max-width: 600px) {
-    #title {
-        font-size: 2rem;
-    }
+        @media (max-width: 600px) {
+            #title {
+                font-size: 2rem;
+            }
 
-    #description {
-        font-size: 1rem;
-    }
+            #description {
+                font-size: 1rem;
+            }
 
-    main {
-        padding: 15px;
-    }
-}
-
-        </style>
-
+            main {
+                padding: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1 id="title">Название фильма6</h1>
+        <h1 id="title">Название фильма7</h1>
         <p id="description">Краткое описание фильма, сюжет или другая информация.</p>
     </header>
 
     <main>
         <!-- Плеер с data-атрибутами -->
         <div 
+            id="player"
             data-kinobox="auto" 
-            data-kinopoisk="1178137" 
+            data-kinopoisk="" 
             data-imdb="" 
             data-tmdb="" 
             data-title="">
         </div>
     </main>
 
-    <!-- Кнопки для переключения между идентификаторами -->
     <footer>
         <button onclick="setPlayerParam('kp_id', '1178137')">Kinopoisk</button>
         <button onclick="setPlayerParam('imdb', 'tt0111161')">IMDb</button>
@@ -127,21 +120,16 @@ footer button:hover {
     <script>
         // Функция для получения значения параметра из URL
         function getParameterByName(name) {
-            const url = window.location.href;
-            const nameEscaped = name.replace(/[\[\]]/g, '\\$&');
-            const regex = new RegExp('[?&]' + nameEscaped + '(=([^&#]*)|&|#|$)');
-            const results = regex.exec(url);
-            if (!results) return null;
-            if (!results[2]) return '';
-            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
         }
 
         // Функция для установки параметров плеера
         function setPlayerParam(param, value) {
-            const playerElement = document.querySelector('[data-kinobox="auto"]');
+            const playerElement = document.getElementById('player');
             playerElement.setAttribute(`data-${param}`, value);
 
-            // Очистка других атрибутов
+            // Удаляем другие атрибуты
             ['kinopoisk', 'imdb', 'tmdb', 'title'].forEach(attr => {
                 if (attr !== param) playerElement.setAttribute(`data-${attr}`, '');
             });
@@ -160,21 +148,25 @@ footer button:hover {
             document.body.appendChild(script);
         }
 
-        // Получаем значения параметров из URL
-        const kp_id = getParameterByName('kp_id');
-        const imdb_id = getParameterByName('imdb');
-        const tmdb_id = getParameterByName('tmdb');
-        const title = getParameterByName('title');
+        // Инициализация плеера на основе GET параметров
+        window.onload = function() {
+            const kp_id = getParameterByName('kp_id');
+            const imdb_id = getParameterByName('imdb');
+            const tmdb_id = getParameterByName('tmdb');
+            const title = getParameterByName('title');
 
-        // Устанавливаем значение первого найденного параметра
-        if (kp_id) {
-            setPlayerParam('kinopoisk', kp_id);
-        } else if (imdb_id) {
-            setPlayerParam('imdb', imdb_id);
-        } else if (tmdb_id) {
-            setPlayerParam('tmdb', tmdb_id);
-        } else if (title) {
-            setPlayerParam('title', title);
+            if (kp_id) {
+                setPlayerParam('kinopoisk', kp_id);
+            } else if (imdb_id) {
+                setPlayerParam('imdb', imdb_id);
+            } else if (tmdb_id) {
+                setPlayerParam('tmdb', tmdb_id);
+            } else if (title) {
+                setPlayerParam('title', title);
+            } else {
+                // Если ни один параметр не указан, по умолчанию загрузить по kp_id
+                setPlayerParam('kinopoisk', '1178137');
+            }
         }
     </script>
 </body>
