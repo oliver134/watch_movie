@@ -5,80 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Смотреть фильм</title>
     <style>
+        /* Основные стили */
         body {
             margin: 0;
-            padding: 0;
             font-family: Arial, sans-serif;
             background-color: #121212;
-            color: #ffffff;
+            color: #FFFFFF;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        header {
+        #movie-container {
             text-align: center;
-            margin-bottom: 20px;
-            padding: 0 20px;
-        }
-
-        #title {
-            font-size: 2.5rem;
-            margin: 0;
-            color: #f5ba13;
-        }
-
-        #description {
-            font-size: 1.2rem;
-            margin: 10px 0;
-            color: #b3b3b3;
-        }
-
-        main {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 90%;
             max-width: 800px;
-            padding: 20px;
-            background-color: #1e1e1e;
-            border-radius: 10px;
-            box-sizing: border-box;
-        }
-
-     [data-kinobox="auto"] {
             width: 100%;
-            /* height: 0; */
-            padding-bottom: 56.25%; /* Соотношение сторон 16:9 */
-          /*  background-color: #000;  Черный фон до загрузки плеера */
-            border-radius: 8px;
         }
 
-        @media (max-width: 600px) {
-            #title {
-                font-size: 2rem;
+        /* Заголовки */
+        #title {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #ff9800;
+        }
+
+        #orig_title {
+            font-size: 1.2em;
+            margin-bottom: 1.5em;
+            color: #ffb74d;
+        }
+
+        /* Плеер */
+        #videocdn-player {
+            width: 100%;
+            height: 450px;
+            background-color: #000;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Кнопка "Смотреть позже" */
+        #watch-later {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff9800;
+            color: #121212;
+            text-decoration: none;
+            font-size: 1em;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        #watch-later:hover {
+            background-color: #ffb74d;
+        }
+
+        /* Адаптация под мобильные устройства */
+        @media (max-width: 768px) {
+            #movie-container {
+                padding: 20px;
             }
 
-            #description {
-                font-size: 1rem;
-            }
-
-            main {
-                padding: 15px;
+            #videocdn-player {
+                height: 300px;
             }
         }
     </style>
 </head>
 <body>
-    <main>
     <div id="movie-container">
         <h1 id="title"></h1>
         <h2 id="orig_title"></h2>
-        <div id="player" class="плеер"></div>
+        <div id="videocdn-player" class="плеер"></div>
+        <a id="watch-later" href="#">Смотреть позже</a>
     </div>
-    </main>
+
     <script>
         // Функция для получения параметров из URL
         function getQueryParam(param) {
@@ -106,7 +117,7 @@
 
             document.getElementById('title').innerText = title;
             document.getElementById('orig_title').innerText = origTitle;
-            document.getElementById('player').innerHTML = iframe;
+            document.getElementById('videocdn-player').innerHTML = iframe;
         }
 
         // Получение данных из API и отображение
@@ -123,4 +134,3 @@
     </script>
 </body>
 </html>
-
