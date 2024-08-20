@@ -94,13 +94,13 @@
 </head>
 <body>
     <header>
-        <h1 id="title">Kinobox Player2</h1>
+        <h1 id="title">Kinobox Player3</h1>
         <p id="description">Watch your favorite movies with Kinobox.</p>
     </header>
 
     <main>
         <!-- Плеер -->
-        <div id="kinobox-player" data-kinobox="auto"></div>
+        
     </main>
 
     <footer>
@@ -109,36 +109,23 @@
     </footer>
 
     <script>
-        // Функция для получения значения параметра из URL
-        function getParameterByName(name) {
-            let url = new URL(window.location.href);
-            return url.searchParams.get(name);
-        }
+   // Функция для получения значения параметра из URL
+function getParameterByName(name) {
+    let url = new URL(window.location.href);
+    let paramValue = url.searchParams.get(name);
+    return paramValue;
+}
 
-        // Проверяем параметры
-        let imdbId = getParameterByName('imdb_id');
-        let kpId = getParameterByName('kp_id');
-        let tmdbId = getParameterByName('tmdb_id');
-        let title = getParameterByName('title');
+// Получаем значение kp_id
+let kpId = getParameterByName('kp_id');
 
-        // Получаем элемент плеера по его id или классу
-        let player = document.getElementById('kinobox-player');
+// Выводим значение kp_id в текст на странице
+if (kpId) {
+    document.body.innerHTML += `<div id="kinobox-player" data-kinobox="auto" data-kinopoisk="${kpId}"></div>`;
+} else {
+    document.body.innerHTML += "<p>ID не найден</p>";
+}
 
-        // Добавляем нужный атрибут в плеер на основе параметра
-        if (imdbId) {
-            player.setAttribute('data-imdb', imdbId);
-        } else if (kpId) {
-            player.setAttribute('data-kp', kpId);
-        } else if (tmdbId) {
-            player.setAttribute('data-tmdb', tmdbId);
-        } else if (title) {
-            player.setAttribute('data-title', title);
-        } else {
-            console.log("Не найдено ни одного подходящего параметра.");
-        }
-
-        // Инициализация плеера (например)
-        // Kinobox.init(player);
     </script>
     <script src="https://kinobox.tv/kinobox.min.js"></script>
 </body>
