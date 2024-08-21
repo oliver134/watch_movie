@@ -117,7 +117,7 @@
         }
     </style>
 </head>
-<body>
+<body>sfdfsdf
     <div id="movie-container">
         <h1 id="title"></h1>
         <h2 id="orig_title"></h2>
@@ -129,6 +129,7 @@
             <span class="player-btn" id="aloha-btn">Alloha</span>
         </div>
     </div>
+	<br><br><br>
  <div class="footer">
         &copy; 2024 MovieStream | Powered by <a href="" target="_blank">Emin M</a>
     </div>
@@ -143,6 +144,8 @@
         const kp_id = getQueryParam('kp_id');
         const imdb_id = getQueryParam('imdb');
 
+const kp_id = getQueryParam('kp');
+	    
         // Формируем URL для запроса API VideoCDN
         let videoCdnApiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
         if (kp_id) {
