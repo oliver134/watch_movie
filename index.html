@@ -91,6 +91,12 @@
         .player-btn:hover {
             background-color: #ffb74d;
         }
+        .iframe-url {
+            margin-top: 20px;
+            font-size: 1em;
+            color: #b0b0b0;
+            word-break: break-all;
+        }
         @media (max-width: 768px) {
             #movie-container {
                 padding: 20px;
@@ -112,8 +118,11 @@
             <span class="player-btn" id="videocdn-btn">VideoCDN</span>
             <span class="player-btn" id="aloha-btn">Alloha</span>
         </div>
+        <div id="iframe-url" class="iframe-url"></div>
     </div>
- 
+    <div class="footer">
+        &copy; 2024 MovieStream | Powered by <a href="" target="_blank">Emin M</a>
+    </div>
     <script>
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
@@ -152,19 +161,18 @@
             } else if (player === 'aloha') {
                 document.getElementById('aloha-player').innerHTML = iframe;
             }
+
+            // Display the iframe URL as text
+            document.getElementById('iframe-url').innerText = iframe;
         }
 
-        // Parse the iframe for the "Дублированный" version
         function findDubbedIframe(data) {
-            let dubbedIframe = '';
+            let iframe = '';
             if (data && Array.isArray(data.playlists)) {
-                data.playlists.forEach(playlist => {
-                    if (playlist.title && playlist.title.includes('Дублированный')) {
-                        dubbedIframe = playlist.iframe;
-                    }
-                });
+                const dubbedPlaylist = data.playlists.find(playlist => playlist.title && playlist.title.includes('Дублированный'));
+                iframe = dubbedPlaylist ? dubbedPlaylist.iframe : (data.playlists[0] ? data.playlists[0].iframe : '');
             }
-            return dubbedIframe;
+            return iframe;
         }
 
         fetch(videoCdnApiUrl)
@@ -181,10 +189,11 @@
         fetch(alohaApiUrl)
             .then(response => response.json())
             .then(data => {
+                console.log('Alloha API Response:', data); // Log the API response for debugging
                 if (data.result) {
-                    const dubbedIframe = findDubbedIframe(data.result);
-                    if (dubbedIframe) {
-                        data.result.iframe = dubbedIframe;
+                    const iframe = findDubbedIframe(data.result);
+                    if (iframe) {
+                        data.result.iframe = iframe;
                     }
                     displayMovieData(data.result, 'aloha');
                 } else {
@@ -196,18 +205,16 @@
         document.getElementById('videocdn-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'block';
             document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText; // Show URL
         });
 
         document.getElementById('aloha-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'block';
+            document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText; // Show URL
         });
 
         document.getElementById('videocdn-btn').click();
     </script>
-<br><br><br> 
-       <div class="footer">
-        &copy; 2024 MovieStream | Powered by <a href="" target="_blank">Emin M</a>
-    </div>
 </body>
 </html>
