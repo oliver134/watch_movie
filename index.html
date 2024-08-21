@@ -12,10 +12,10 @@
             background-color: #121212;
             color: #FFFFFF;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
             height: 100vh;
-            padding-top: 20px;
+            overflow: hidden;
         }
 
         #movie-container {
@@ -33,11 +33,17 @@
 
         #orig_title {
             font-size: 1.2em;
-            margin-bottom: 1.5em;
+            margin-bottom: 0.5em;
             color: #ffb74d;
         }
 
-        /* Плееры */
+        #year {
+            font-size: 1em;
+            margin-bottom: 1.5em;
+            color: #ffcc80;
+        }
+
+        /* Плеер */
         .плеер {
             width: 100%;
             height: 450px;
@@ -54,10 +60,10 @@
             border: none;
         }
 
-        /* Кнопки переключения плеера */
-        .player-button {
+        /* Кнопки переключения плееров */
+        .player-btn {
             display: inline-block;
-            margin: 10px;
+            margin-top: 20px;
             padding: 10px 20px;
             background-color: #ff9800;
             color: #121212;
@@ -68,7 +74,7 @@
             cursor: pointer;
         }
 
-        .player-button:hover {
+        .player-btn:hover {
             background-color: #ffb74d;
         }
 
@@ -88,11 +94,12 @@
     <div id="movie-container">
         <h1 id="title"></h1>
         <h2 id="orig_title"></h2>
+        <h3 id="year"></h3>
         <div id="videocdn-player" class="плеер"></div>
         <div id="aloha-player" class="плеер"></div>
         <div>
-            <button id="videocdn-button" class="player-button">VideoCDN</button>
-            <button id="aloha-button" class="player-button">Alloha</button>
+            <span class="player-btn" id="videocdn-btn">VideoCDN</span>
+            <span class="player-btn" id="aloha-btn">Alloha</span>
         </div>
     </div>
 
@@ -107,70 +114,77 @@
         const kp_id = getQueryParam('kp_id');
         const imdb_id = getQueryParam('imdb');
 
-        // Формируем URL для запроса API
-        let videcdnApiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
+        // Формируем URL для запроса API VideoCDN
+        let videoCdnApiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
         if (kp_id) {
-            videcdnApiUrl += `&kinopoisk_id=${kp_id}`;
+            videoCdnApiUrl += `&kinopoisk_id=${kp_id}`;
         } else if (imdb_id) {
-            videcdnApiUrl += `&imdb_id=${imdb_id}`;
+            videoCdnApiUrl += `&imdb_id=${imdb_id}`;
         }
 
+        // Формируем URL для запроса API Alloha
         let alohaApiUrl = `https://api.alloha.tv/?token=d317441359e505c343c2063edc97e7`;
         if (kp_id) {
             alohaApiUrl += `&kp=${kp_id}`;
         } else if (imdb_id) {
-            alohaApiUrl += `&imdb_id=${imdb_id}`;
+            alohaApiUrl += `&imdb=${imdb_id}`;
         }
 
         // Функция для отображения данных фильма
-        function displayMovieData(data, playerId) {
+        function displayMovieData(data, player) {
             const title = data.title || 'Название не найдено';
             const origTitle = data.orig_title || 'Оригинальное название не найдено';
+            const year = data.year || 'Год не найден';
             const iframe = data.iframe || '';
 
             document.getElementById('title').innerText = title;
             document.getElementById('orig_title').innerText = origTitle;
-            document.getElementById(playerId).innerHTML = iframe;
+            document.getElementById('year').innerText = year;
+
+            if (player === 'videocdn') {
+                document.getElementById('videocdn-player').innerHTML = iframe;
+            } else if (player === 'aloha') {
+                document.getElementById('aloha-player').innerHTML = iframe;
+            }
         }
 
-        // Функция для выбора плеера
-        function selectPlayer(playerId) {
-            localStorage.setItem('selectedPlayer', playerId);
-            document.getElementById('videocdn-player').style.display = playerId === 'videocdn-player' ? 'block' : 'none';
-            document.getElementById('aloha-player').style.display = playerId === 'aloha-player' ? 'block' : 'none';
-        }
-
-        // Восстановление выбора плеера
-        const selectedPlayer = localStorage.getItem('selectedPlayer') || 'videocdn-player';
-        selectPlayer(selectedPlayer);
-
-        // Получение данных из VideoCDN API
-        fetch(videcdnApiUrl)
+        // Получение данных из API VideoCDN
+        fetch(videoCdnApiUrl)
             .then(response => response.json())
             .then(data => {
                 if (data.result && data.data && data.data.length > 0) {
-                    displayMovieData(data.data[0], 'videocdn-player');
+                    displayMovieData(data.data[0], 'videocdn');
                 } else {
-                    console.error('Данные VideoCDN не найдены или произошла ошибка.');
+                    console.error('Данные не найдены или произошла ошибка.');
                 }
             })
-            .catch(error => console.error('Ошибка при получении данных VideoCDN:', error));
+            .catch(error => console.error('Ошибка при получении данных:', error));
 
-        // Получение данных из Alloha API
+        // Получение данных из API Alloha
         fetch(alohaApiUrl)
             .then(response => response.json())
             .then(data => {
-                if (data.result && data.data && data.data.length > 0) {
-                    displayMovieData(data.data[0], 'aloha-player');
+                if (data.result) {
+                    displayMovieData(data.result, 'aloha');
                 } else {
-                    console.error('Данные Alloha не найдены или произошла ошибка.');
+                    console.error('Данные не найдены или произошла ошибка.');
                 }
             })
-            .catch(error => console.error('Ошибка при получении данных Alloha:', error));
+            .catch(error => console.error('Ошибка при получении данных:', error));
 
-        // Обработчики событий для кнопок выбора плеера
-        document.getElementById('videocdn-button').addEventListener('click', () => selectPlayer('videocdn-player'));
-        document.getElementById('aloha-button').addEventListener('click', () => selectPlayer('aloha-player'));
+        // Переключение между плеерами
+        document.getElementById('videocdn-btn').addEventListener('click', function() {
+            document.getElementById('videocdn-player').style.display = 'block';
+            document.getElementById('aloha-player').style.display = 'none';
+        });
+
+        document.getElementById('aloha-btn').addEventListener('click', function() {
+            document.getElementById('videocdn-player').style.display = 'none';
+            document.getElementById('aloha-player').style.display = 'block';
+        });
+
+        // Устанавливаем плеер VideoCDN как активный по умолчанию
+        document.getElementById('videocdn-btn').click();
     </script>
 </body>
 </html>
