@@ -146,6 +146,8 @@
             alohaApiUrl += `&imdb=${imdb_id}`;
         }
 
+        let vbApiUrl = `https://apivb.info/api/videos.json?token=d16fe09ddd4d031b06a32a2e535147fc&id_kp=${kp_id || ''}`;
+
         function displayMovieData(data, player) {
             const title = data.title || 'Название не найдено';
             const origTitle = data.orig_title || 'Оригинальное название не найдено';
@@ -162,7 +164,6 @@
                 document.getElementById('aloha-player').innerHTML = iframe;
             }
 
-            // Display the iframe URL as text
             document.getElementById('iframe-url').innerText = iframe;
         }
 
@@ -189,7 +190,7 @@
         fetch(alohaApiUrl)
             .then(response => response.json())
             .then(data => {
-                console.log('Alloha API Response:', data); // Log the API response for debugging
+                console.log('Alloha API Response:', data);
                 if (data.result) {
                     const iframe = findDubbedIframe(data.result);
                     if (iframe) {
@@ -202,16 +203,33 @@
             })
             .catch(error => console.error('Ошибка при получении данных:', error));
 
+        fetch(vbApiUrl)
+            .then(response => response.json())
+            .then(data => {
+                console.log('VB API Response:', data);
+                if (data && data.length > 0) {
+                    const firstResult = data[0];
+                    document.getElementById('title').innerText = firstResult.title_ru || 'Название не найдено';
+                    document.getElementById('orig_title').innerText = firstResult.title_en || 'Оригинальное название не найдено';
+                    document.getElementById('year').innerText = firstResult.year || 'Год не найден';
+                    document.getElementById('iframe-url').innerText = firstResult.iframe_url || 'Iframe URL не найден';
+                    document.getElementById('videocdn-player').innerHTML = firstResult.iframe_url || '';
+                } else {
+                    console.error('Данные не найдены или произошла ошибка в VB API.');
+                }
+            })
+            .catch(error => console.error('Ошибка при получении данных из VB API:', error));
+
         document.getElementById('videocdn-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'block';
             document.getElementById('aloha-player').style.display = 'none';
-            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText; // Show URL
+            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText;
         });
 
         document.getElementById('aloha-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'block';
-            document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText; // Show URL
+            document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText;
         });
 
         document.getElementById('videocdn-btn').click();
