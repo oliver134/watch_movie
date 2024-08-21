@@ -1,190 +1,62 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Смотреть фильм</title>
+    <title>Watch Movie</title>
     <style>
-        /* Основные стили */
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background-color: #121212;
-            color: #FFFFFF;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        #movie-container {
-            text-align: center;
-            max-width: 800px;
+        .Aloha {
             width: 100%;
-        }
-
-        /* Заголовки */
-        #title {
-            font-size: 2em;
-            margin-bottom: 0.5em;
-            color: #ff9800;
-        }
-
-        #orig_title {
-            font-size: 1.2em;
-            margin-bottom: 0.5em;
-            color: #ffb74d;
-        }
-
-        #year {
-            font-size: 1em;
-            margin-bottom: 1.5em;
-            color: #ffcc80;
-        }
-
-        /* Плеер 
-        .плеер {
-            width: 100%;
-            height: 450px;
-            background-color: #000;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-            display: none;
-        }
-
-        iframe {
-            width: 100%;
-            height: 100%;
+            height: 500px;
             border: none;
-        }*/
-
-        /* Кнопки переключения плееров */
-        .player-btn {
-            display: inline-block;
-            margin-top: 20px;
-            padding: 10px 20px;
-            background-color: #ff9800;
-            color: #121212;
-            text-decoration: none;
-            font-size: 1em;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-            cursor: pointer;
-        }
-
-        .player-btn:hover {
-            background-color: #ffb74d;
-        }
-
-        /* Адаптация под мобильные устройства */
-        @media (max-width: 768px) {
-            #movie-container {
-                padding: 20px;
-            }
-
-            .плеер {
-                height: 300px;
-            }
         }
     </style>
 </head>
 <body>
-    <div id="movie-container">
-        <h1 id="title"></h1>
-        <h2 id="orig_title"></h2>
-        <h3 id="year"></h3>
-        <div id="videocdn-player" class="плеер"></div>
-        <div id="aloha-player" class="плеер"></div>
-        <div>
-            <span class="player-btn" id="videocdn-btn">VideoCDN</span>
-            <span class="player-btn" id="aloha-btn">Alloha</span>
-        </div>
-    </div>
 
-    <script>
-        // Функция для получения параметров из URL
-        function getQueryParam(param) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(param);
-        }
+<h1 id="title">Loading title...</h1>
+<h2 id="orig_title">Loading original title...</h2>
+<div id="player"></div>
 
-        // Получаем параметры kinopoisk_id или imdb из URL
-        const kp_id = getQueryParam('kp_id');
-        const imdb_id = getQueryParam('imdb');
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const kp_id = urlParams.get('kp_id');
+    const imdb_id = urlParams.get('imdb_id');
+    const tmdb_id = urlParams.get('tmdb_id');
 
-        // Формируем URL для запроса API VideoCDN
-        let videoCdnApiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
-        if (kp_id) {
-            videoCdnApiUrl += `&kinopoisk_id=${kp_id}`;
-        } else if (imdb_id) {
-            videoCdnApiUrl += `&imdb_id=${imdb_id}`;
-        }
+    let queryParam;
+    if (kp_id) {
+        queryParam = `kp=${kp_id}`;
+    } else if (imdb_id) {
+        queryParam = `imdb=${imdb_id}`;
+    } else if (tmdb_id) {
+        queryParam = `tmdb=${tmdb_id}`;
+    } else {
+        document.getElementById('title').textContent = 'Error: No valid parameters provided.';
+        document.getElementById('orig_title').textContent = '';
+        return;
+    }
 
-        // Формируем URL для запроса API Alloha
-        let alohaApiUrl = `https://api.alloha.tv/?token=d317441359e505c343c2063edc97e7`;
-        if (kp_id) {
-            alohaApiUrl += `&kp=${kp_id}`;
-        } else if (imdb_id) {
-            alohaApiUrl += `&imdb=${imdb_id}`;
-        }
+    const token = 'd317441359e505c343c2063edc97e7';
+    const apiUrl = `https://api.alloha.tv/?token=${token}&${queryParam}`;
 
-        // Функция для отображения данных фильма
-        function displayMovieData(data, player) {
-            const title = data.title || 'Название не найдено';
-            const origTitle = data.orig_title || 'Оригинальное название не найдено';
-            const year = data.year || 'Год не найден';
-            const iframe = data.iframe || '';
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('title').textContent = data.title || 'Title not available';
+            document.getElementById('orig_title').textContent = data.orig_title || 'Original title not available';
 
-            document.getElementById('title').innerText = title;
-            document.getElementById('orig_title').innerText = origTitle;
-            document.getElementById('year').innerText = year;
-
-            if (player === 'videocdn') {
-                document.getElementById('videocdn-player').innerHTML = iframe;
-            } else if (player === 'aloha') {
-                document.getElementById('aloha-player').innerHTML = iframe;
-            }
-        }
-
-        // Получение данных из API VideoCDN
-        fetch(videoCdnApiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.result && data.data && data.data.length > 0) {
-                    displayMovieData(data.data[0], 'videocdn');
-                } else {
-                    console.error('Данные не найдены или произошла ошибка.');
-                }
-            })
-            .catch(error => console.error('Ошибка при получении данных:', error));
-
-        // Получение данных из API Alloha
-        fetch(alohaApiUrl)
-            .then(response => response.json())
-            .then(data => {
-                if (data.result) {
-                    displayMovieData(data.result, 'aloha');
-                } else {
-                    console.error('Данные не найдены или произошла ошибка.');
-                }
-            })
-            .catch(error => console.error('Ошибка при получении данных:', error));
-
-        // Переключение между плеерами
-        document.getElementById('videocdn-btn').addEventListener('click', function() {
-            document.getElementById('videocdn-player').style.display = 'block';
-            document.getElementById('aloha-player').style.display = 'none';
+            const iframe = document.createElement('iframe');
+            iframe.className = 'Aloha';
+            iframe.src = data.iframe;
+            document.getElementById('player').appendChild(iframe);
+        })
+        .catch(error => {
+            console.error('Error fetching movie data:', error);
+            document.getElementById('title').textContent = 'Error loading movie data.';
+            document.getElementById('orig_title').textContent = '';
         });
+</script>
 
-        document.getElementById('aloha-btn').addEventListener('click', function() {
-            document.getElementById('videocdn-player').style.display = 'none';
-            document.getElementById('aloha-player').style.display = 'block';
-        });
-
-        // Устанавливаем плеер VideoCDN как активный по умолчанию
-        document.getElementById('aloha-btn').click();
-    </script>
 </body>
 </html>
