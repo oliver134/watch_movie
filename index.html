@@ -114,9 +114,11 @@
         <h3 id="year"></h3>
         <div id="videocdn-player" class="плеер"></div>
         <div id="aloha-player" class="плеер"></div>
+        <div id="vb-player" class="плеер"></div>
         <div>
             <span class="player-btn" id="videocdn-btn">VideoCDN</span>
             <span class="player-btn" id="aloha-btn">Alloha</span>
+            <span class="player-btn" id="vb-btn">VB API</span>
         </div>
         <div id="iframe-url" class="iframe-url"></div>
     </div>
@@ -162,6 +164,8 @@
                 document.getElementById('videocdn-player').innerHTML = iframe;
             } else if (player === 'aloha') {
                 document.getElementById('aloha-player').innerHTML = iframe;
+            } else if (player === 'vb') {
+                document.getElementById('vb-player').innerHTML = iframe;
             }
 
             document.getElementById('iframe-url').innerText = iframe;
@@ -213,7 +217,7 @@
                     document.getElementById('orig_title').innerText = firstResult.title_en || 'Оригинальное название не найдено';
                     document.getElementById('year').innerText = firstResult.year || 'Год не найден';
                     document.getElementById('iframe-url').innerText = firstResult.iframe_url || 'Iframe URL не найден';
-                    document.getElementById('videocdn-player').innerHTML = firstResult.iframe_url || '';
+                    document.getElementById('vb-player').innerHTML = `<iframe src="${firstResult.iframe_url}" frameborder="0" allowfullscreen></iframe>`;
                 } else {
                     console.error('Данные не найдены или произошла ошибка в VB API.');
                 }
@@ -223,13 +227,22 @@
         document.getElementById('videocdn-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'block';
             document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('vb-player').style.display = 'none';
             document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText;
         });
 
         document.getElementById('aloha-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'block';
+            document.getElementById('vb-player').style.display = 'none';
             document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText;
+        });
+
+        document.getElementById('vb-btn').addEventListener('click', function() {
+            document.getElementById('videocdn-player').style.display = 'none';
+            document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('vb-player').style.display = 'block';
+            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
         });
 
         document.getElementById('videocdn-btn').click();
