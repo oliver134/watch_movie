@@ -115,15 +115,13 @@
         <h2 id="orig_title"></h2>
         <h3 id="year"></h3>
         <div id="videocdn-player" class="плеер"></div>
-        <div id="aloha-player" class="плеер"></div>
         <div id="vb-player" class="плеер"></div>
-        <div id="aloha2-player" class="плеер"></div> <!-- New Player Container -->
+        <div id="aloha-player" class="плеер"></div> <!-- New Player Container -->
         <div id="iframe-url" class="плеер iframe-url"></div>
         <div>
             <span class="player-btn" id="videocdn-btn">VideoCDN</span>
-            <span class="player-btn" id="aloha-btn">Alloha</span>
             <span class="player-btn" id="vb-btn">HDVB</span>
-            <span class="player-btn" id="aloha2-btn">Aloha 2</span> <!-- New Button -->
+            <span class="player-btn" id="aloha-btn">Aloha</span> <!-- New Button -->
             <span class="player-btn" id="iframe-btn">iframe-url</span>
         </div>
     </div>
@@ -170,12 +168,10 @@
 
             if (player === 'videocdn') {
                 document.getElementById('videocdn-player').innerHTML = iframe;
-            } else if (player === 'aloha') {
-                document.getElementById('aloha-player').innerHTML = iframe;
             } else if (player === 'vb') {
                 document.getElementById('vb-player').innerHTML = iframe;
-            } else if (player === 'aloha2') { // New Player Container
-                document.getElementById('aloha2-player').innerHTML = `<iframe src="${iframe}" frameborder="0" allowfullscreen></iframe>`;
+            } else if (player === 'aloha') { // New Player Container
+                document.getElementById('aloha-player').innerHTML = `<iframe src="${iframe}" frameborder="0" allowfullscreen></iframe>`;
             }
 
             document.getElementById('iframe-url').innerText = iframe;
@@ -201,21 +197,6 @@
             })
             .catch(error => console.error('Ошибка при получении данных:', error));
 
-        fetch(alohaApiUrl)
-            .then(response => response.json())
-            .then(data => {
-                console.log('Alloha API Response:', data);
-                if (data.result) {
-                    const iframe = findDubbedIframe(data.result);
-                    if (iframe) {
-                        data.result.iframe = iframe;
-                    }
-                    displayMovieData(data.result, 'aloha');
-                } else {
-                    console.error('Данные не найдены или произошла ошибка.');
-                }
-            })
-            .catch(error => console.error('Ошибка при получении данных:', error));
 
         fetch(vbApiUrl)
             .then(response => response.json())
@@ -235,7 +216,7 @@
             .then(data => {
                 console.log('Kinobox API Response:', data);
                 if (data && data.iframe) {
-                    displayMovieData({ iframe: data.iframe }, 'aloha2');
+                    displayMovieData({ iframe: data.iframe }, 'aloha');
                 } else {
                     console.error('Данные не найдены или произошла ошибка.');
                 }
@@ -246,35 +227,26 @@
             document.getElementById('videocdn-player').style.display = 'block';
             document.getElementById('aloha-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('aloha2-player').style.display = 'none'; // Hide Other Players
         });
 
         document.getElementById('aloha-btn').addEventListener('click', () => {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'block';
             document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('aloha2-player').style.display = 'none'; // Hide Other Players
         });
 
         document.getElementById('vb-btn').addEventListener('click', () => {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'block';
-            document.getElementById('aloha2-player').style.display = 'none'; // Hide Other Players
         });
 
-        document.getElementById('aloha2-btn').addEventListener('click', () => { // Aloha 2 Button
-            document.getElementById('videocdn-player').style.display = 'none';
-            document.getElementById('aloha-player').style.display = 'none';
-            document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('aloha2-player').style.display = 'block'; // Show Aloha 2 Player
-        });
+     
 
         document.getElementById('iframe-btn').addEventListener('click', () => {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('aloha2-player').style.display = 'none';
             document.getElementById('iframe-url').style.display = 'block';
         });
     </script>
