@@ -4,95 +4,100 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Player</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        #player-container {
+            width: 80%;
+            max-width: 1000px;
+            margin: 20px 0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        #source-buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .source-button {
+            background-color: #282828;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .source-button:hover {
+            background-color: #3f3f3f;
+        }
+
+        .source-button.active {
+            background-color: #1db954;
+        }
+    </style>
 </head>
 <body>
     <div id="player-container">
-        <!-- The player iframe will be loaded here -->
-    </div>
-    <div id="buttons">
-        <button data-source="videocdn">Videocdn</button>
-        <button data-source="alloha">Alloha</button>
-        <button data-source="kodik">Kodik</button>
+        <iframe id="moviePlayer" src=""></iframe>
     </div>
 
-    <script">
-    // Function to get the query parameter by name
-function getQueryParam(param) {
-    const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get(param);
-}
+    <div id="source-buttons">
+        <button class="source-button" data-source="videocdn">Videocdn</button>
+        <button class="source-button" data-source="alloha">Alloha</button>
+        <button class="source-button" data-source="kodik">Kodik</button>
+    </div>
 
-// Function to load the player
-function loadPlayer(source) {
-    const playerContainer = document.getElementById('player-container');
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const player = document.getElementById("moviePlayer");
+            const sourceButtons = document.querySelectorAll(".source-button");
 
-    // Extracting the relevant parameters from the URL
-    const kpId = getQueryParam('kp_id');
-    const imdb = getQueryParam('imdb');
-    const tmdb = getQueryParam('tmdb');
-    const title = getQueryParam('title');
+            const urlParams = new URLSearchParams(window.location.search);
+            const movieId = urlParams.get('kp_id') || urlParams.get('imdb') || urlParams.get('tmdb') || urlParams.get('title');
+            let source = 'videocdn';
 
-    let apiUrl = 'https://kinobox.tv/api/players?';
-
-    // Constructing the API URL based on available query parameters
-    if (kpId) {
-        apiUrl += `kinopoisk=${kpId}`;
-    } else if (imdb) {
-        apiUrl += `imdb=${imdb}`;
-    } else if (tmdb) {
-        apiUrl += `tmdb=${tmdb}`;
-    } else if (title) {
-        apiUrl += `title=${title}`;
-    }
-
-    apiUrl += `&sources=${source}`;
-
-    // Fetch the player URL from the API
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Assuming the API returns an iframe URL under the key 'iframeUrl'
-            const iframeUrl = data.iframeUrl; // Replace 'iframeUrl' with the correct field name
-
-            if (iframeUrl) {
-                // Create or update the iframe
-                let iframe = document.getElementById('player-iframe');
-                if (!iframe) {
-                    iframe = document.createElement('iframe');
-                    iframe.id = 'player-iframe';
-                    iframe.width = '100%';
-                    iframe.height = '500px'; // Adjust height as needed
-                    iframe.allowFullscreen = true;
-                    playerContainer.appendChild(iframe);
-                }
-                iframe.src = iframeUrl;
-            } else {
-                playerContainer.innerHTML = '<p>Player not available. Please try another source.</p>';
+            function fetchPlayerSource(movieId, source) {
+                fetch(`https://kinobox.tv/api/players?${urlParams}&sources=${source}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        player.src = data.iframeUrl;
+                    })
+                    .catch(error => console.error('Error fetching the player:', error));
             }
-        })
-        .catch(error => {
-            console.error('Error fetching player:', error);
-            playerContainer.innerHTML = '<p>Error loading player. Please try again later.</p>';
+
+            sourceButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    sourceButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    source = this.getAttribute('data-source');
+                    fetchPlayerSource(movieId, source);
+                });
+            });
+
+            // Initialize with default source
+            fetchPlayerSource(movieId, source);
         });
-}
-
-// Function to handle button clicks
-function setupButtonClicks() {
-    const buttons = document.querySelectorAll('#buttons button');
-    buttons.forEach(button => {
-        button.addEventListener('click', () => {
-            const source = button.getAttribute('data-source');
-            loadPlayer(source);
-        });
-    });
-}
-
-// Initialize button click handlers and load default player on page load
-window.onload = () => {
-    setupButtonClicks();
-    loadPlayer('videocdn');
-};
-
     </script>
 </body>
 </html>
