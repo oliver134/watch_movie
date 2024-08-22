@@ -74,7 +74,7 @@
             const sourceButtons = document.querySelectorAll(".source-button");
 
             const urlParams = new URLSearchParams(window.location.search);
-            const movieId = urlParams.get('kp_id') || urlParams.get('imdb') || urlParams.get('tmdb') || urlParams.get('title');
+            const movieId = urlParams.get('kinopoisk') || urlParams.get('imdb') || urlParams.get('tmdb') || urlParams.get('title');
             let source = 'videocdn';
 
             function fetchPlayerSource(movieId, source) {
