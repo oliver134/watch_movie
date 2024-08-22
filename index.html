@@ -248,7 +248,12 @@
             document.getElementById('vb-player').style.display = 'block';
             document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
         });
-
+ document.getElementById('iframe-btn').addEventListener('click', function() {
+            document.getElementById('videocdn-player').style.display = 'none';
+            document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('vb-player').style.display = 'block';
+            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
+        });
         document.getElementById('videocdn-btn').click();
     </script>
 </body>
