@@ -115,15 +115,16 @@
         <h2 id="orig_title"></h2>
         <h3 id="year"></h3>
         <div id="videocdn-player" class="плеер"></div>
+        <div id="aloha-player" class="плеер"></div>
         <div id="vb-player" class="плеер"></div>
-        <div id="aloha-player" class="плеер"></div> <!-- New Player Container -->
-        <div id="iframe-url" class="плеер iframe-url"></div>
+           <div id="iframe-url" class="плеер iframe-url"></div>
         <div>
             <span class="player-btn" id="videocdn-btn">VideoCDN</span>
+            <span class="player-btn" id="aloha-btn">Alloha</span>
             <span class="player-btn" id="vb-btn">HDVB</span>
-            <span class="player-btn" id="aloha-btn">Aloha</span> <!-- New Button -->
             <span class="player-btn" id="iframe-btn">iframe-url</span>
         </div>
+     
     </div>
     <div class="footer">
         &copy; 2024 MovieStream | Powered by <a href="" target="_blank">Emin M</a>
@@ -153,9 +154,6 @@
 
         let vbApiUrl = `https://apivb.info/api/videos.json?token=d16fe09ddd4d031b06a32a2e535147fc&id_kp=${kp_id || ''}`;
 
-        // New Kinobox API URL
-        let kinoboxApiUrl = `https://kinobox.tv/api/players?kinopoisk=${kp_id}&sources=alloha`;
-
         function displayMovieData(data, player) {
             const title = data.title || 'Название не найдено';
             const origTitle = data.orig_title || 'Оригинальное название не найдено';
@@ -168,10 +166,10 @@
 
             if (player === 'videocdn') {
                 document.getElementById('videocdn-player').innerHTML = iframe;
+            } else if (player === 'aloha') {
+                document.getElementById('aloha-player').innerHTML = iframe;
             } else if (player === 'vb') {
                 document.getElementById('vb-player').innerHTML = iframe;
-            } else if (player === 'aloha') { // New Player Container
-                document.getElementById('aloha-player').innerHTML = `<iframe src="${iframe}" frameborder="0" allowfullscreen></iframe>`;
             }
 
             document.getElementById('iframe-url').innerText = iframe;
@@ -197,58 +195,69 @@
             })
             .catch(error => console.error('Ошибка при получении данных:', error));
 
-
-        fetch(vbApiUrl)
+        fetch(alohaApiUrl)
             .then(response => response.json())
             .then(data => {
-                console.log('VB API Response:', data);
-                if (data && data.length > 0) {
-                    displayMovieData({ iframe: data[0].iframe }, 'vb');
+                console.log('Alloha API Response:', data);
+                if (data.result) {
+                    const iframe = findDubbedIframe(data.result);
+                    if (iframe) {
+                        data.result.iframe = iframe;
+                    }
+                    displayMovieData(data.result, 'aloha');
                 } else {
                     console.error('Данные не найдены или произошла ошибка.');
                 }
             })
             .catch(error => console.error('Ошибка при получении данных:', error));
 
-        // Fetching Kinobox API for Aloha 2 Player
-        fetch(kinoboxApiUrl)
+        fetch(vbApiUrl)
             .then(response => response.json())
             .then(data => {
-                console.log('Kinobox API Response:', data);
-                if (data && data.iframe) {
-                    displayMovieData({ iframe: data.iframe }, 'aloha');
+                console.log('VB API Response:', data);
+                if (data && data.length > 0) {
+                    const firstResult = data[0];
+                    document.getElementById('title').innerText = firstResult.title_ru || 'Название не найдено';
+                    document.getElementById('orig_title').innerText = firstResult.title_en || 'Оригинальное название не найдено';
+                    document.getElementById('year').innerText = firstResult.year || 'Год не найден';
+                    document.getElementById('iframe-url').innerText = firstResult.iframe_url || 'Iframe URL не найден';
+                    document.getElementById('vb-player').innerHTML = `<iframe src="${firstResult.iframe_url}" frameborder="0" allowfullscreen></iframe>`;
                 } else {
-                    console.error('Данные не найдены или произошла ошибка.');
+                    console.error('Данные не найдены или произошла ошибка в VB API.');
                 }
             })
-            .catch(error => console.error('Ошибка при получении данных от Kinobox API:', error));
+            .catch(error => console.error('Ошибка при получении данных из VB API:', error));
 
-        document.getElementById('videocdn-btn').addEventListener('click', () => {
+        document.getElementById('videocdn-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'block';
             document.getElementById('aloha-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'none';
+            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText;
         });
 
-        document.getElementById('aloha-btn').addEventListener('click', () => {
+        document.getElementById('aloha-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'block';
             document.getElementById('vb-player').style.display = 'none';
+            document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText;
         });
 
-        document.getElementById('vb-btn').addEventListener('click', () => {
+        document.getElementById('vb-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'block';
+            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
         });
-
-     
-
-        document.getElementById('iframe-btn').addEventListener('click', () => {
+ document.getElementById('iframe-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
             document.getElementById('aloha-player').style.display = 'none';
-            document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('iframe-url').style.display = 'block';
+            document.getElementById('vb-player').style.display = 'block';
+            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
         });
+        document.getElementById('videocdn-btn').click();
     </script>
+
+
+
 </body>
 </html>
