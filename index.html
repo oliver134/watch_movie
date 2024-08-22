@@ -10,13 +10,13 @@
         <!-- The player iframe will be loaded here -->
     </div>
     <div id="buttons">
-        <button id="videocdn" onclick="loadPlayer('videocdn')">Videocdn</button>
-        <button id="alloha" onclick="loadPlayer('alloha')">Alloha</button>
-        <button id="kodik" onclick="loadPlayer('kodik')">Kodik</button>
+        <button data-source="videocdn">Videocdn</button>
+        <button data-source="alloha">Alloha</button>
+        <button data-source="kodik">Kodik</button>
     </div>
 
     <script>
-// Function to get query parameter by name
+        // Function to get the query parameter by name
 function getQueryParam(param) {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(param);
@@ -25,15 +25,18 @@ function getQueryParam(param) {
 // Function to load the player
 function loadPlayer(source) {
     const playerContainer = document.getElementById('player-container');
-    const kinopoisk = getQueryParam('kp_id');
+
+    // Extracting the relevant parameters from the URL
+    const kpId = getQueryParam('kp_id');
     const imdb = getQueryParam('imdb');
     const tmdb = getQueryParam('tmdb');
     const title = getQueryParam('title');
 
     let apiUrl = 'https://kinobox.tv/api/players?';
 
-    if (kinopoisk) {
-        apiUrl += `kinopoisk=${kinopoisk}`;
+    // Constructing the API URL based on available query parameters
+    if (kpId) {
+        apiUrl += `kinopoisk=${kpId}`;
     } else if (imdb) {
         apiUrl += `imdb=${imdb}`;
     } else if (tmdb) {
@@ -48,20 +51,24 @@ function loadPlayer(source) {
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            // Assuming the API returns a URL to the player
-            const playerUrl = data.player_url; // Update with actual field from API response
+            // Assuming the API returns an iframe URL under the key 'iframeUrl'
+            const iframeUrl = data.iframeUrl; // Replace 'iframeUrl' with the correct field name
 
-            // Create or update the iframe
-            let iframe = document.getElementById('player-iframe');
-            if (!iframe) {
-                iframe = document.createElement('iframe');
-                iframe.id = 'player-iframe';
-                iframe.width = '100%';
-                iframe.height = '500px'; // Adjust height as needed
-                iframe.allowFullscreen = true;
-                playerContainer.appendChild(iframe);
+            if (iframeUrl) {
+                // Create or update the iframe
+                let iframe = document.getElementById('player-iframe');
+                if (!iframe) {
+                    iframe = document.createElement('iframe');
+                    iframe.id = 'player-iframe';
+                    iframe.width = '100%';
+                    iframe.height = '500px'; // Adjust height as needed
+                    iframe.allowFullscreen = true;
+                    playerContainer.appendChild(iframe);
+                }
+                iframe.src = iframeUrl;
+            } else {
+                playerContainer.innerHTML = '<p>Player not available. Please try another source.</p>';
             }
-            iframe.src = playerUrl;
         })
         .catch(error => {
             console.error('Error fetching player:', error);
@@ -69,12 +76,23 @@ function loadPlayer(source) {
         });
 }
 
-// Load the default player (e.g., videocdn) on page load
+// Function to handle button clicks
+function setupButtonClicks() {
+    const buttons = document.querySelectorAll('#buttons button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const source = button.getAttribute('data-source');
+            loadPlayer(source);
+        });
+    });
+}
+
+// Initialize button click handlers and load default player on page load
 window.onload = () => {
+    setupButtonClicks();
     loadPlayer('videocdn');
 };
 
-        
     </script>
 </body>
 </html>
