@@ -3,62 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watch Movie</title>
+    <title>Movie Player</title>
 </head>
 <body>
     <div id="player-container">
-        <!-- The player iframe will be injected here -->
+        <!-- The player iframe will be loaded here -->
     </div>
-    
-    <div id="player-buttons">
-        <button onclick="loadPlayer('videocdn')">VideoCDN</button>
-        <button onclick="loadPlayer('alloha')">Alloha</button>
-        <button onclick="loadPlayer('kodik')">Kodik</button>
+    <div id="buttons">
+        <button id="videocdn" onclick="loadPlayer('videocdn')">Videocdn</button>
+        <button id="alloha" onclick="loadPlayer('alloha')">Alloha</button>
+        <button id="kodik" onclick="loadPlayer('kodik')">Kodik</button>
     </div>
-    
+
     <script>
-// Extract the movie ID and type from the URL
-const urlParams = new URLSearchParams(window.location.search);
-const kp_id = urlParams.get('kp_id');
-const imdb_id = urlParams.get('imdb_id');
-const tmdb_id = urlParams.get('tmdb_id');
-const title = urlParams.get('title');
+// Function to get query parameter by name
+function getQueryParam(param) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(param);
+}
 
-// Function to fetch and display the player
+// Function to load the player
 function loadPlayer(source) {
-    let apiUrl = `https://kinobox.tv/api/players?sources=${source}`;
+    const playerContainer = document.getElementById('player-container');
+    const kinopoisk = getQueryParam('kp_id');
+    const imdb = getQueryParam('imdb');
+    const tmdb = getQueryParam('tmdb');
+    const title = getQueryParam('title');
 
-    if (kp_id) {
-        apiUrl += `&kinopoisk=${kp_id}`;
-    } else if (imdb_id) {
-        apiUrl += `&imdb=${imdb_id}`;
-    } else if (tmdb_id) {
-        apiUrl += `&tmdb=${tmdb_id}`;
+    let apiUrl = 'https://kinobox.tv/api/players?';
+
+    if (kinopoisk) {
+        apiUrl += `kinopoisk=${kinopoisk}`;
+    } else if (imdb) {
+        apiUrl += `imdb=${imdb}`;
+    } else if (tmdb) {
+        apiUrl += `tmdb=${tmdb}`;
     } else if (title) {
-        apiUrl += `&title=${title}`;
+        apiUrl += `title=${title}`;
     }
 
-    // Fetch the player data
+    apiUrl += `&sources=${source}`;
+
+    // Fetch the player URL from the API
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
-            // Check if data is returned and contains an iframe
-            if (data && data[0] && data[0].iframe) {
-                const iframeHtml = data[0].iframe;
-                document.getElementById('player-container').innerHTML = iframeHtml;
-            } else {
-                document.getElementById('player-container').innerHTML = '<p>No player available for this source.</p>';
+            // Assuming the API returns a URL to the player
+            const playerUrl = data.player_url; // Update with actual field from API response
+
+            // Create or update the iframe
+            let iframe = document.getElementById('player-iframe');
+            if (!iframe) {
+                iframe = document.createElement('iframe');
+                iframe.id = 'player-iframe';
+                iframe.width = '100%';
+                iframe.height = '500px'; // Adjust height as needed
+                iframe.allowFullscreen = true;
+                playerContainer.appendChild(iframe);
             }
+            iframe.src = playerUrl;
         })
         .catch(error => {
-            console.error('Error fetching the player:', error);
-            document.getElementById('player-container').innerHTML = '<p>Error loading the player.</p>';
+            console.error('Error fetching player:', error);
+            playerContainer.innerHTML = '<p>Error loading player. Please try again later.</p>';
         });
 }
 
-// Load the default player (e.g., VideoCDN) on page load
-loadPlayer('videocdn');
+// Load the default player (e.g., videocdn) on page load
+window.onload = () => {
+    loadPlayer('videocdn');
+};
 
+        
     </script>
 </body>
 </html>
