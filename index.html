@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Смотреть фильм</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Cherry+Swash" rel="stylesheet">
     <style>
+        /* Основные стили */
         body {
             margin: 0;
             font-family: 'Roboto', sans-serif;
@@ -24,6 +24,7 @@
             text-align: center;
             color: #e0e0e0;
         }
+
         h2 {
             font-size: 1.5rem;
             margin-bottom: 1rem;
@@ -35,34 +36,43 @@
             max-width: 800px;
             width: 100%;
         }
+
+        /* Заголовки */
         #title {
             font-size: 2em;
             margin-bottom: 0.5em;
             color: #ff9800;
         }
+
         #orig_title {
             font-size: 1.2em;
             margin-bottom: 0.5em;
             color: #ffb74d;
         }
+
         #year {
             font-size: 1em;
             margin-bottom: 1.5em;
             color: #ffcc80;
         }
+
         .footer {
             font-size: 0.875rem;
             color: #757575;
             margin-top: 2rem;
             text-align: center;
         }
+
         .footer a {
             color: #1e88e5;
             text-decoration: none;
         }
+
         .footer a:hover {
             text-decoration: underline;
         }
+
+        /* Плееры */
         .плеер {
             width: 100%;
             height: 450px;
@@ -72,13 +82,15 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
             display: none;
         }
+
         iframe {
             width: 100%;
             height: 100%;
             border: none;
         }
+
+        /* Кнопки переключения плееров */
         .player-btn {
-            font-family: 'Cherry Swash';
             display: inline-block;
             margin-top: 20px;
             padding: 10px 20px;
@@ -90,19 +102,17 @@
             transition: background-color 0.3s ease;
             cursor: pointer;
         }
+
         .player-btn:hover {
             background-color: #ffb74d;
         }
-        .iframe-url {
-            margin-top: 20px;
-            font-size: 1em;
-            color: #b0b0b0;
-            word-break: break-all;
-        }
+
+        /* Адаптация под мобильные устройства */
         @media (max-width: 768px) {
             #movie-container {
                 padding: 20px;
             }
+
             .плеер {
                 height: 300px;
             }
@@ -115,29 +125,31 @@
         <h2 id="orig_title"></h2>
         <h3 id="year"></h3>
         <div id="videocdn-player" class="плеер"></div>
-        <div id="aloha-player" class="плеер"></div>
+        <div id="kinobox-player" class="плеер"></div>
         <div id="vb-player" class="плеер"></div>
-           <div id="iframe-url" class="плеер iframe-url"></div>
         <div>
             <span class="player-btn" id="videocdn-btn">VideoCDN</span>
-            <span class="player-btn" id="aloha-btn">Alloha</span>
-            <span class="player-btn" id="vb-btn">HDVB</span>
-            <span class="player-btn" id="iframe-btn">iframe-url</span>
+            <span class="player-btn" id="kinobox-btn">Kinobox</span>
+            <span class="player-btn" id="vb-btn">VB</span>
         </div>
-     
+        <div id="iframe-url" style="color: #ff9800; margin-top: 20px;"></div>
     </div>
+    <br><br><br>
     <div class="footer">
         &copy; 2024 MovieStream | Powered by <a href="" target="_blank">Emin M</a>
     </div>
     <script>
+        // Функция для получения параметров из URL
         function getQueryParam(param) {
             const urlParams = new URLSearchParams(window.location.search);
             return urlParams.get(param);
         }
 
+        // Получаем параметры kinopoisk_id или imdb из URL
         const kp_id = getQueryParam('kp_id');
         const imdb_id = getQueryParam('imdb');
 
+        // Формируем URL для запроса API VideoCDN
         let videoCdnApiUrl = `https://videocdn.tv/api/short?api_token=pfp3D870PGEY3Afjti0gMtSfmn2aZqih`;
         if (kp_id) {
             videoCdnApiUrl += `&kinopoisk_id=${kp_id}`;
@@ -145,15 +157,13 @@
             videoCdnApiUrl += `&imdb_id=${imdb_id}`;
         }
 
-        let alohaApiUrl = `https://api.alloha.tv/?token=d317441359e505c343c2063edc97e7`;
-        if (kp_id) {
-            alohaApiUrl += `&kp=${kp_id}`;
-        } else if (imdb_id) {
-            alohaApiUrl += `&imdb=${imdb_id}`;
-        }
+        // Формируем URL для запроса API VB
+        let vbApiUrl = `https://apivb.info/api/videos.json?token=d16fe09ddd4d031b06a32a2e535147fc&id_kp=${kp_id}`;
 
-        let vbApiUrl = `https://apivb.info/api/videos.json?token=d16fe09ddd4d031b06a32a2e535147fc&id_kp=${kp_id || ''}`;
+        // Формируем URL для запроса API Kinobox
+        let kinoboxApiUrl = `https://kinobox.tv/api/players?kinopoisk=${kp_id}&sources=alloha`;
 
+        // Функция для отображения данных фильма
         function displayMovieData(data, player) {
             const title = data.title || 'Название не найдено';
             const origTitle = data.orig_title || 'Оригинальное название не найдено';
@@ -166,24 +176,14 @@
 
             if (player === 'videocdn') {
                 document.getElementById('videocdn-player').innerHTML = iframe;
-            } else if (player === 'aloha') {
-                document.getElementById('aloha-player').innerHTML = iframe;
+            } else if (player === 'kinobox') {
+                document.getElementById('kinobox-player').innerHTML = iframe;
             } else if (player === 'vb') {
                 document.getElementById('vb-player').innerHTML = iframe;
             }
-
-            document.getElementById('iframe-url').innerText = iframe;
         }
 
-        function findDubbedIframe(data) {
-            let iframe = '';
-            if (data && Array.isArray(data.playlists)) {
-                const dubbedPlaylist = data.playlists.find(playlist => playlist.title && playlist.title.includes('Дублированный'));
-                iframe = dubbedPlaylist ? dubbedPlaylist.iframe : (data.playlists[0] ? data.playlists[0].iframe : '');
-            }
-            return iframe;
-        }
-
+        // Получение данных из API VideoCDN
         fetch(videoCdnApiUrl)
             .then(response => response.json())
             .then(data => {
@@ -193,101 +193,63 @@
                     console.error('Данные не найдены или произошла ошибка.');
                 }
             })
-            .catch(error => console.error('Ошибка при получении данных:', error));
+            .catch(error => console.error('Ошибка при получении данных из VideoCDN API:', error));
 
-        fetch(alohaApiUrl)
+        // Получение данных из API VB
+        fetch(vbApiUrl)
             .then(response => response.json())
             .then(data => {
-                console.log('Alloha API Response:', data);
-                if (data.result) {
-                    const iframe = findDubbedIframe(data.result);
-                    if (iframe) {
-                        data.result.iframe = iframe;
-                    }
-                    displayMovieData(data.result, 'aloha');
+                if (data && data[0]) {
+                    displayMovieData({
+                        title: data[0].title_ru || data[0].title_en,
+                        orig_title: data[0].title_en || 'Оригинальное название не найдено',
+                        year: data[0].year,
+                        iframe: `<iframe src="${data[0].iframe_url}" frameborder="0" allowfullscreen></iframe>`
+                    }, 'vb');
                 } else {
                     console.error('Данные не найдены или произошла ошибка.');
                 }
             })
-            .catch(error => console.error('Ошибка при получении данных:', error));
-
-        fetch(vbApiUrl)
-            .then(response => response.json())
-            .then(data => {
-                console.log('VB API Response:', data);
-                if (data && data.length > 0) {
-                    const firstResult = data[0];
-                    document.getElementById('title').innerText = firstResult.title_ru || 'Название не найдено';
-                    document.getElementById('orig_title').innerText = firstResult.title_en || 'Оригинальное название не найдено';
-                    document.getElementById('year').innerText = firstResult.year || 'Год не найден';
-                    document.getElementById('iframe-url').innerText = firstResult.iframe_url || 'Iframe URL не найден';
-                    document.getElementById('vb-player').innerHTML = `<iframe src="${firstResult.iframe_url}" frameborder="0" allowfullscreen></iframe>`;
-                } else {
-                    console.error('Данные не найдены или произошла ошибка в VB API.');
-                }
-            })
             .catch(error => console.error('Ошибка при получении данных из VB API:', error));
 
+        // Получение данных из API Kinobox
+        fetch(kinoboxApiUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data && data.player) {
+                    displayMovieData({
+                        title: 'Kinobox Player',
+                        orig_title: 'Kinobox Player',
+                        year: 'Год не найден',
+                        iframe: `<iframe src="${data.player}" frameborder="0" allowfullscreen></iframe>`
+                    }, 'kinobox');
+                } else {
+                    console.error('Данные не найдены или произошла ошибка.');
+                }
+            })
+            .catch(error => console.error('Ошибка при получении данных из Kinobox API:', error));
+
+        // Переключение между плеерами
         document.getElementById('videocdn-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'block';
-            document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('kinobox-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerText;
+            document.getElementById('iframe-url').innerText = document.getElementById('videocdn-player').innerHTML;
         });
 
-        document.getElementById('aloha-btn').addEventListener('click', function() {
+        document.getElementById('kinobox-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
-            document.getElementById('aloha-player').style.display = 'block';
+            document.getElementById('kinobox-player').style.display = 'block
             document.getElementById('vb-player').style.display = 'none';
-            document.getElementById('iframe-url').innerText = document.getElementById('aloha-player').innerText;
+            document.getElementById('iframe-url').innerText = document.getElementById('kinobox-player').innerHTML;
         });
 
         document.getElementById('vb-btn').addEventListener('click', function() {
             document.getElementById('videocdn-player').style.display = 'none';
-            document.getElementById('aloha-player').style.display = 'none';
+            document.getElementById('kinobox-player').style.display = 'none';
             document.getElementById('vb-player').style.display = 'block';
-            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
+            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerHTML;
         });
- document.getElementById('iframe-btn').addEventListener('click', function() {
-            document.getElementById('videocdn-player').style.display = 'none';
-            document.getElementById('aloha-player').style.display = 'none';
-            document.getElementById('vb-player').style.display = 'block';
-            document.getElementById('iframe-url').innerText = document.getElementById('vb-player').innerText;
-        });
-        document.getElementById('videocdn-btn').click();
     </script>
-
-
-
-
-<div class="uitools" id="videoplayers"></div>
-<script>
-var dataTitle = ""; // Name Video
-
-var kp_id = "1282758"; // id Video 462682
-var my_script_play = document.createElement("script");
-my_script_play.setAttribute("src",
-"//pleer.videoplayers.club/get_player?
-w=700
-&h=370
-&type=widget
-&is_strip=
-&kp_id="+kp_id+"
-&name=
-&players=kodik,apicollaps,videocdn,hdvb,alloha
-&r_id=videoplayers
-&ani=COLLAPS&ati=&adi=
-&vni=VIDEOCDN&vti=&vdi=
-&hni=HDVB&bti=&bdi=
-&alni=ALLOHATV&alti=&usti=&usdi=
-&koni=KODIK&koti=&kodi=
-&data_title="+dataTitle+"
-&ru=" +window.location.href);
-my_script_play.async = true;
-document.head.appendChild(my_script_play);
-
-</script>
-
-    
 </body>
 </html>
