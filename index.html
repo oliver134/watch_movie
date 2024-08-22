@@ -69,35 +69,54 @@
     </div>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const player = document.getElementById("moviePlayer");
-            const sourceButtons = document.querySelectorAll(".source-button");
+      document.addEventListener("DOMContentLoaded", function() {
+    const player = document.getElementById("moviePlayer");
+    const sourceButtons = document.querySelectorAll(".source-button");
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const movieId = urlParams.get('kinopoisk') || urlParams.get('imdb') || urlParams.get('tmdb') || urlParams.get('title');
-            let source = 'videocdn';
+    const urlParams = new URLSearchParams(window.location.search);
+    const kpId = urlParams.get('kp_id');
+    const imdbId = urlParams.get('imdb');
+    const tmdbId = urlParams.get('tmdb');
+    const title = urlParams.get('title');
+    let source = 'videocdn';
 
-            function fetchPlayerSource(movieId, source) {
-                fetch(`https://kinobox.tv/api/players?${urlParams}&sources=${source}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        player.src = data.iframeUrl;
-                    })
-                    .catch(error => console.error('Error fetching the player:', error));
-            }
+    function fetchPlayerSource(source) {
+        let apiUrl = '';
 
-            sourceButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    sourceButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    source = this.getAttribute('data-source');
-                    fetchPlayerSource(movieId, source);
-                });
-            });
+        if (kpId) {
+            apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=${source}`;
+        } else if (imdbId) {
+            apiUrl = `https://kinobox.tv/api/players?imdb=${imdbId}&sources=${source}`;
+        } else if (tmdbId) {
+            apiUrl = `https://kinobox.tv/api/players?tmdb=${tmdbId}&sources=${source}`;
+        } else if (title) {
+            apiUrl = `https://kinobox.tv/api/players?title=${title}&sources=${source}`;
+        } else {
+            console.error('No valid movie identifier found in the URL.');
+            return;
+        }
 
-            // Initialize with default source
-            fetchPlayerSource(movieId, source);
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                player.src = data.iframeUrl;
+            })
+            .catch(error => console.error('Error fetching the player:', error));
+    }
+
+    sourceButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            sourceButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            source = this.getAttribute('data-source');
+            fetchPlayerSource(source);
         });
+    });
+
+    // Initialize with default source
+    fetchPlayerSource(source);
+});
+
     </script>
 </body>
 </html>
