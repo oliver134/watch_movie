@@ -263,7 +263,11 @@
 var dataUrl=window.location.href;
 var my_script_play = document.createElement("script");
 my_script_play.setAttribute("src","//pleer.videoplayers.club/get_player?w=610&h=370&type=widget&kp_id=1219417&players=apicollaps,videocdn,hdvb,alloha,&r_id=videoplayers&ani=COLLAPS&ati=&adi=&vni=VIDEOCDN&vti=&vdi=&hni=HDVB&bti=&bdi=&alni=ALLOHATV&usti=&usdi=&tti=&ru="+dataUrl);
-my_script_play.async = true;
+
+my_script_play.setAttribute("src","//pleer.videoplayers.club/get_player?w=610&h=370&type=widget&kp_id=1219417&players=apicollaps,&r_id=videoplayers&ani=COLLAPS&usti=&usdi=&tti=&ru="+dataUrl);
+  
+
+    my_script_play.async = true;
 document.head.appendChild(my_script_play);
 </script>
 
