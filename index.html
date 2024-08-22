@@ -5,58 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Movie Player</title>
     <style>
+        /* Основные стили для страницы */
         body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: Arial, sans-serif;
+            background-color: #121212; /* Темный фон для страницы */
+            color: #ffffff; /* Белый цвет текста */
+            font-family: Arial, sans-serif; /* Шрифт */
             margin: 0;
             padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            flex-direction: column;
+            display: flex; /* Используем Flexbox для центровки контента */
+            justify-content: center; /* Горизонтальное центрирование */
+            align-items: center; /* Вертикальное центрирование */
+            height: 100vh; /* Высота страницы на весь экран */
+            flex-direction: column; /* Располагаем элементы вертикально */
         }
 
         #player-container {
-            width: 80%;
-            max-width: 1000px;
-            margin: 20px 0;
+            width: 80%; /* Ширина контейнера с плеером */
+            max-width: 1000px; /* Максимальная ширина */
+            margin: 20px 0; /* Отступы сверху и снизу */
         }
 
         iframe {
-            width: 100%;
-            height: 500px;
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            width: 100%; /* Ширина iframe на всю ширину контейнера */
+            height: 500px; /* Высота iframe */
+            border: none; /* Убираем рамку */
+            border-radius: 10px; /* Закругленные углы */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5); /* Тень для эффекта поднятия */
         }
 
         #source-buttons {
-            margin-top: 10px;
-            display: flex;
-            gap: 10px;
+            margin-top: 10px; /* Отступ сверху для кнопок */
+            display: flex; /* Используем Flexbox для кнопок */
+            gap: 10px; /* Расстояние между кнопками */
         }
 
         .source-button {
-            background-color: #282828;
-            color: #ffffff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s;
+            background-color: #282828; /* Темный фон кнопок */
+            color: #ffffff; /* Белый цвет текста */
+            border: none; /* Убираем рамку */
+            padding: 10px 20px; /* Внутренние отступы */
+            cursor: pointer; /* Курсор в виде руки при наведении */
+            border-radius: 5px; /* Закругленные углы кнопок */
+            transition: background-color 0.3s; /* Плавный переход фона при наведении */
         }
 
         .source-button:hover {
-            background-color: #3f3f3f;
+            background-color: #3f3f3f; /* Светлее фон при наведении */
         }
 
         .source-button.active {
-            background-color: #1db954;
+            background-color: #1db954; /* Зеленый фон для активной кнопки */
         }
     </style>
 </head>
+
 <body>
     <div id="player-container">
         <iframe id="moviePlayer" src=""></iframe>
@@ -69,20 +71,24 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function() {
+     document.addEventListener("DOMContentLoaded", function() {
+    // Получаем iframe для отображения плеера и кнопки для выбора источника
     const player = document.getElementById("moviePlayer");
     const sourceButtons = document.querySelectorAll(".source-button");
 
+    // Извлекаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    const kpId = urlParams.get('kp_id');
-    const imdbId = urlParams.get('imdb');
-    const tmdbId = urlParams.get('tmdb');
-    const title = urlParams.get('title');
-    let source = 'videocdn';
+    const kpId = urlParams.get('kp_id'); // Получаем значение kp_id из URL
+    const imdbId = urlParams.get('imdb'); // Получаем значение imdb из URL
+    const tmdbId = urlParams.get('tmdb'); // Получаем значение tmdb из URL
+    const title = urlParams.get('title'); // Получаем значение title из URL
+    let source = 'videocdn'; // Устанавливаем начальный источник плеера
 
+    // Функция для получения URL плеера и обновления iframe
     function fetchPlayerSource(source) {
         let apiUrl = '';
 
+        // В зависимости от того, какой параметр присутствует, строим URL для запроса к API
         if (kpId) {
             apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=${source}`;
         } else if (imdbId) {
@@ -92,28 +98,30 @@
         } else if (title) {
             apiUrl = `https://kinobox.tv/api/players?title=${title}&sources=${source}`;
         } else {
-            console.error('No valid movie identifier found in the URL.');
+            console.error('Не найдено подходящего идентификатора фильма в URL.');
             return;
         }
 
+        // Отправляем GET-запрос к API и получаем данные
         fetch(apiUrl)
-            .then(response => response.json())
+            .then(response => response.json()) // Преобразуем ответ в JSON
             .then(data => {
-                player.src = data.iframeUrl;
+                player.src = data.iframeUrl; // Устанавливаем URL iframe в плеер
             })
-            .catch(error => console.error('Error fetching the player:', error));
+            .catch(error => console.error('Ошибка при получении плеера:', error)); // Обрабатываем ошибки
     }
 
+    // Добавляем обработчики событий на кнопки для смены источника
     sourceButtons.forEach(button => {
         button.addEventListener('click', function() {
-            sourceButtons.forEach(btn => btn.classList.remove('active'));
-            this.classList.add('active');
-            source = this.getAttribute('data-source');
-            fetchPlayerSource(source);
+            sourceButtons.forEach(btn => btn.classList.remove('active')); // Убираем активный класс со всех кнопок
+            this.classList.add('active'); // Добавляем активный класс к нажатой кнопке
+            source = this.getAttribute('data-source'); // Получаем значение источника из атрибута data-source
+            fetchPlayerSource(source); // Загружаем плеер с выбранным источником
         });
     });
 
-    // Initialize with default source
+    // Инициализация плеера с начальным источником при загрузке страницы
     fetchPlayerSource(source);
 });
 
