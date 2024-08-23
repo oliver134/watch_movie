@@ -29,13 +29,20 @@
     </style>
 </head>
 <body>
-<div class="kinobox_player"></div>
-<div class="kinobox1_player"></div>
+    <div class="cdnmovies_player"></div>
+    <div class="videocdn_player"></div>
+    <div class="alloha_player"></div>
+    <div class="ashdi_player"></div>
+    <div class="collaps_player"></div>
+    <div class="hdvb_player"></div>
+    <div class="kodik_player"></div>
+    <div class="vibix_player"></div>
+    <div class="voidboost_player"></div>
     
 <script src="https://kinobox.tv/kinobox.min.js"></script>
 <script>
 
-    kbox('.kinobox_player', {
+    kbox('.cdnmovies_player', {
         menu: { // Настройки меню
             enable: false, // Показывать меню
         },
@@ -47,7 +54,9 @@
         }
     });
 
-    kbox('.kinobox1_player', {
+
+
+        kbox('.videocdn_player', {
            menu: { // Настройки меню
             enable: false, // Показывать меню
         },
@@ -58,9 +67,92 @@
             videocdn: {enable: true, position: 1}
         }
     });
+
+        kbox('.alloha_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            alloha: {enable: true, position: 1}
+        }
+    });
+
+        kbox('.ashdi_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            ashdi: {enable: true, position: 1}
+        }
+    });
+
+        kbox('.collaps_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            collaps: {enable: true, position: 1}
+        }
+    });
+
+           kbox('.hdvb_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            hdvb: {enable: true, position: 1}
+        }
+    });
+
+           kbox('.kodik_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            kodik: {enable: true, position: 1}
+        }
+    });
+
+           kbox('.vibix_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            vibix: {enable: true, position: 1}
+        }
+    });
+               kbox('.voidboost_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            voidboost: {enable: true, position: 1}
+        }
+    });
 </script>
 
-    
-</script>
+
+
 </body>
 </html>
