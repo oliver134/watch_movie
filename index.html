@@ -46,7 +46,7 @@
     function loadPlayer() {
         const kpId = getQueryParam('kp_id');
         if (kpId) {
-            const apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=videocdn`;
+            const apiUrl = `https://kinobox.tv/api/players?kinopoisk=462682&sources=videocdn`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
