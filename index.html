@@ -29,34 +29,44 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 id="title">Title</h1>
-        <iframe id="player" class="player" src="" frameborder="0" allowfullscreen></iframe>
-        <div class="info">
-            <h2 id="orig_title">Original Title</h2>
-            <p id="year">Year: <span id="year_value"></span></p>
-            <p id="source">Source: <span id="source_value"></span></p>
-        </div>
-    </div>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const urlParams = new URLSearchParams(window.location.search);
-            const kpId = urlParams.get('kp_id') || '462682';
-            const apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=videocdn`;
-
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const playerData = data.data[0];
-                    document.getElementById('title').innerText = playerData.title || 'No Title Available';
-                    document.getElementById('orig_title').innerText = playerData.orig_title || 'No Original Title Available';
-                    document.getElementById('year_value').innerText = playerData.year || 'N/A';
-                    document.getElementById('source_value').innerText = playerData.source || 'N/A';
-                    document.getElementById('player').src = playerData.iframe || '';
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        });
-    </script>
+<div class="kinobox_player"></div>
+<script src="https://kinobox.tv/kinobox.min.js"></script>
+<script>
+    kbox('.kinobox_player', {
+        search: { // Настройки поиска
+            kinopoisk: '258687', // Поиск фильма по ID Кинопоиска
+            imdb: 'tt0816692', // Поиск фильма по IMDb Id
+            tmdb: '157336', // Поиск фильма по TMDB Id
+            title: 'Интерстеллар' // Поиск фильма по названию
+        },
+        menu: { // Настройки меню
+            enable: true, // Показывать меню
+            default: 'menu_list', // Вид меню для стандартных устройств
+            mobile: 'menu_button', // Вид меню для мобильных устройств
+            format: '{N} :: {T} ({Q})', // Формат пункта меню
+            limit: 5, // Максимальное количество элементов в меню
+            open: false, // Открывать меню по умолчанию
+        },
+        notFoundMessage: 'Видео не найдено.', // Сообщение, если плееры не найдены
+        players: { // Настройки источников
+            Videocdn: { // Название
+                enable: true, // Включить
+                position: 1 // Позиция в меню
+            },
+            Cdnmovies: {
+                enable: false,
+                position: 2
+            },
+             alloha: { // Название
+                enable: true, // Включить
+                position: 1 // Позиция в меню
+            },
+             kodik: { // Название
+                enable: true, // Включить
+                position: 1 // Позиция в меню
+            },
+        }
+    });
+</script>
 </body>
 </html>
