@@ -14,6 +14,7 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-direction: column;
         }
         .player-container {
             max-width: 800px;
@@ -22,6 +23,7 @@
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+            margin-bottom: 10px;
         }
         iframe {
             width: 100%;
@@ -29,13 +31,21 @@
             border: none;
             border-radius: 10px;
         }
+        p {
+            color: #b0b0b0;
+            word-break: break-all;
+            text-align: center;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
-___________________________________________________________________________<br><br><br>
+
 <div class="player-container">
     <iframe id="movie-player" src="" allowfullscreen></iframe>
 </div>
+
+<p id="iframe-link"></p>
 
 <script>
     function getQueryParam(param) {
@@ -53,6 +63,7 @@ ___________________________________________________________________________<br><
                     const iframeUrl = data.data.iframeUrl[0]; // Parse the first iframeUrl
                     if (iframeUrl) {
                         document.getElementById('movie-player').src = iframeUrl;
+                        document.getElementById('iframe-link').textContent = iframeUrl; // Display the iframeUrl
                     } else {
                         console.error('No iframeUrl found in API response');
                     }
