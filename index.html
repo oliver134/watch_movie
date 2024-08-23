@@ -14,145 +14,148 @@
         .container {
             max-width: 800px;
             margin: 0 auto;
+            text-align: center;
         }
         h1, h2, p {
             text-align: center;
         }
-        .player {
+        .player-container {
+            position: relative;
             width: 100%;
             height: 450px;
             margin-bottom: 20px;
         }
+        .player {
+            width: 100%;
+            height: 100%;
+            display: none;
+        }
+        .active {
+            display: block;
+        }
         .info {
             text-align: left;
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        .button-group button {
+            background-color: #1E1E1E;
+            color: #FFFFFF;
+            border: 1px solid #333333;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin: 0 5px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+        .button-group button:hover {
+            background-color: #333333;
+            transform: scale(1.05);
+        }
+        .button-group button.active {
+            background-color: #333333;
+            border-color: #555555;
         }
     </style>
 </head>
 <body>
-    <div class="cdnmovies_player"></div>
-    <div class="videocdn_player"></div>
-    <div class="alloha_player"></div>
-    <div class="ashdi_player"></div>
-    <div class="collaps_player"></div>
-    <div class="hdvb_player"></div>
-    <div class="kodik_player"></div>
-    <div class="vibix_player"></div>
-    <div class="voidboost_player"></div>
-    
-<script src="https://kinobox.tv/kinobox.min.js"></script>
-<script>
+    <div class="container">
+        <h1>Movie Player</h1>
+        <div class="button-group">
+            <button onclick="switchPlayer('cdnmovies_player')" class="active">CDN Movies</button>
+            <button onclick="switchPlayer('videocdn_player')">VideoCDN</button>
+            <button onclick="switchPlayer('alloha_player')">Alloha</button>
+            <button onclick="switchPlayer('ashdi_player')">Ashdi</button>
+            <button onclick="switchPlayer('collaps_player')">Collaps</button>
+            <button onclick="switchPlayer('hdvb_player')">HDVB</button>
+            <button onclick="switchPlayer('kodik_player')">Kodik</button>
+            <button onclick="switchPlayer('vibix_player')">Vibix</button>
+            <button onclick="switchPlayer('voidboost_player')">VoidBoost</button>
+        </div>
+        <div class="player-container">
+            <div class="cdnmovies_player player active"></div>
+            <div class="videocdn_player player"></div>
+            <div class="alloha_player player"></div>
+            <div class="ashdi_player player"></div>
+            <div class="collaps_player player"></div>
+            <div class="hdvb_player player"></div>
+            <div class="kodik_player player"></div>
+            <div class="vibix_player player"></div>
+            <div class="voidboost_player player"></div>
+        </div>
+    </div>
 
-    kbox('.cdnmovies_player', {
-        menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-            kinopoisk: '462682',
-        },
-        players: {
-            cdnmovies: {enable: true, position: 1}
+    <script src="https://kinobox.tv/kinobox.min.js"></script>
+    <script>
+        function switchPlayer(playerClass) {
+            const players = document.querySelectorAll('.player');
+            players.forEach(player => {
+                player.classList.remove('active');
+            });
+            document.querySelector(`.${playerClass}`).classList.add('active');
+
+            const buttons = document.querySelectorAll('.button-group button');
+            buttons.forEach(button => {
+                button.classList.remove('active');
+            });
+            document.querySelector(`[onclick="switchPlayer('${playerClass}')"]`).classList.add('active');
         }
-    });
 
-
+        kbox('.cdnmovies_player', {
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { cdnmovies: { enable: true, position: 1 } }
+        });
 
         kbox('.videocdn_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            videocdn: {enable: true, position: 1}
-        }
-    });
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { videocdn: { enable: true, position: 1 } }
+        });
 
         kbox('.alloha_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            alloha: {enable: true, position: 1}
-        }
-    });
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { alloha: { enable: true, position: 1 } }
+        });
 
         kbox('.ashdi_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            ashdi: {enable: true, position: 1}
-        }
-    });
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { ashdi: { enable: true, position: 1 } }
+        });
 
         kbox('.collaps_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            collaps: {enable: true, position: 1}
-        }
-    });
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { collaps: { enable: true, position: 1 } }
+        });
 
-           kbox('.hdvb_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            hdvb: {enable: true, position: 1}
-        }
-    });
+        kbox('.hdvb_player', {
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { hdvb: { enable: true, position: 1 } }
+        });
 
-           kbox('.kodik_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            kodik: {enable: true, position: 1}
-        }
-    });
+        kbox('.kodik_player', {
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { kodik: { enable: true, position: 1 } }
+        });
 
-           kbox('.vibix_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            vibix: {enable: true, position: 1}
-        }
-    });
-               kbox('.voidboost_player', {
-           menu: { // Настройки меню
-            enable: false, // Показывать меню
-        },
-        search: {
-             kinopoisk: '462682',
-        },
-        players: {
-            voidboost: {enable: true, position: 1}
-        }
-    });
-</script>
+        kbox('.vibix_player', {
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { vibix: { enable: true, position: 1 } }
+        });
 
-
-
+        kbox('.voidboost_player', {
+            menu: { enable: false },
+            search: { kinopoisk: '462682' },
+            players: { voidboost: { enable: true, position: 1 } }
+        });
+    </script>
 </body>
 </html>
