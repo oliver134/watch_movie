@@ -46,12 +46,16 @@
     function loadPlayer() {
         const kpId = getQueryParam('kp_id');
         if (kpId) {
-            const apiUrl = `https://kinobox.tv/api/players?kinopoisk=462682&sources=videocdn`;
+            const apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=videocdn`;
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    const iframeUrl = data.data.iframeUr; // Using the correct field name for the iframe URL
-                    document.getElementById('movie-player').src = iframeUrl;
+                    const iframeUrl = data.data.iframeUrl[0]; // Parse the first iframeUrl
+                    if (iframeUrl) {
+                        document.getElementById('movie-player').src = iframeUrl;
+                    } else {
+                        console.error('No iframeUrl found in API response');
+                    }
                 })
                 .catch(error => console.error('Error fetching API data:', error));
         } else {
