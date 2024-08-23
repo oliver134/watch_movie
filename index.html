@@ -30,7 +30,7 @@
 </head>
 <body>
 <div class="kinobox_player"></div>
-
+<div class="kinobox1_player"></div>
     
 <script src="https://kinobox.tv/kinobox.min.js"></script>
 <script>
@@ -38,13 +38,24 @@
     kbox('.kinobox_player', {
         menu: { // Настройки меню
             enable: false, // Показывать меню
-
         },
         search: {
             kinopoisk: '462682',
         },
         players: {
             cdnmovies: {enable: true, position: 1}
+        }
+    });
+
+    kbox('.kinobox1_player', {
+           menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        search: {
+             kinopoisk: '462682',
+        },
+        players: {
+            videocdn: {enable: true, position: 1}
         }
     });
 </script>
