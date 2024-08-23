@@ -89,6 +89,12 @@
 
     <script src="https://kinobox.tv/kinobox.min.js"></script>
     <script>
+        // Функция для получения значения параметра из URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
         // Функция для переключения плееров
         function switchPlayer(playerClass, playerName) {
             // Сохранение выбранного плеера в localStorage
@@ -114,9 +120,10 @@
 
         // Функция для загрузки плеера
         function loadPlayer(playerClass, playerName) {
+            const kinopoiskId = getQueryParam('kp_id') || getQueryParam('imdb') || getQueryParam('tmdb') || '';
             kbox(`.${playerClass}`, {
                 menu: { enable: false },
-                search: {query: '462682'},
+                search: { query: kinopoiskId },
                 players: { [playerName]: { enable: true, position: 1 } }
             });
         }
