@@ -71,24 +71,22 @@
     </div>
 
     <script>
-     document.addEventListener("DOMContentLoaded", function() {
-    // Получаем iframe для отображения плеера и кнопки для выбора источника
+  document.addEventListener("DOMContentLoaded", function() {
     const player = document.getElementById("moviePlayer");
     const sourceButtons = document.querySelectorAll(".source-button");
 
     // Извлекаем параметры из URL
     const urlParams = new URLSearchParams(window.location.search);
-    const kpId = urlParams.get('kp_id'); // Получаем значение kp_id из URL
-    const imdbId = urlParams.get('imdb'); // Получаем значение imdb из URL
-    const tmdbId = urlParams.get('tmdb'); // Получаем значение tmdb из URL
-    const title = urlParams.get('title'); // Получаем значение title из URL
-    let source = 'videocdn'; // Устанавливаем начальный источник плеера
+    const kpId = urlParams.get('kp_id');
+    const imdbId = urlParams.get('imdb');
+    const tmdbId = urlParams.get('tmdb');
+    const title = urlParams.get('title');
+    let source = 'videocdn';
 
-    // Функция для получения URL плеера и обновления iframe
     function fetchPlayerSource(source) {
         let apiUrl = '';
 
-        // В зависимости от того, какой параметр присутствует, строим URL для запроса к API
+        // Строим URL запроса, оставляя название параметра как есть
         if (kpId) {
             apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=${source}`;
         } else if (imdbId) {
@@ -102,28 +100,29 @@
             return;
         }
 
-        // Отправляем GET-запрос к API и получаем данные
+        // Выполняем запрос к API и устанавливаем src для iframe
         fetch(apiUrl)
-            .then(response => response.json()) // Преобразуем ответ в JSON
+            .then(response => response.json())
             .then(data => {
-                player.src = data.iframeUrl; // Устанавливаем URL iframe в плеер
+                player.src = data.iframeUrl;
             })
-            .catch(error => console.error('Ошибка при получении плеера:', error)); // Обрабатываем ошибки
+            .catch(error => console.error('Ошибка при получении плеера:', error));
     }
 
-    // Добавляем обработчики событий на кнопки для смены источника
+    // Обработка клика по кнопке для смены источника
     sourceButtons.forEach(button => {
         button.addEventListener('click', function() {
-            sourceButtons.forEach(btn => btn.classList.remove('active')); // Убираем активный класс со всех кнопок
-            this.classList.add('active'); // Добавляем активный класс к нажатой кнопке
-            source = this.getAttribute('data-source'); // Получаем значение источника из атрибута data-source
-            fetchPlayerSource(source); // Загружаем плеер с выбранным источником
+            sourceButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            source = this.getAttribute('data-source');
+            fetchPlayerSource(source);
         });
     });
 
-    // Инициализация плеера с начальным источником при загрузке страницы
+    // Инициализация плеера при загрузке страницы
     fetchPlayerSource(source);
 });
+
 
     </script>
 </body>
