@@ -46,6 +46,7 @@
 </div>
 
 <p id="iframe-link"></p>
+<p id="api-url"></p>
 
 <script>
     function getQueryParam(param) {
@@ -56,9 +57,12 @@
     function loadPlayer() {
         const kpId = getQueryParam('kp_id');
         const iframeLinkElement = document.getElementById('iframe-link');
+        const apiUrlElement = document.getElementById('api-url');
         
         if (kpId) {
             const apiUrl = `https://kinobox.tv/api/players?kinopoisk=${kpId}&sources=videocdn`;
+            apiUrlElement.textContent = `Fetching data from: ${apiUrl}`; // Display the API URL
+
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
