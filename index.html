@@ -103,59 +103,25 @@
             document.querySelector(`[onclick="switchPlayer('${playerClass}')"]`).classList.add('active');
         }
 
-        kbox('.cdnmovies_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { cdnmovies: { enable: true, position: 1 } }
-        });
+       const players = [
+    'cdnmovies',
+    'videocdn',
+    'alloha',
+    'ashdi',
+    'collaps',
+    'hdvb',
+    'kodik',
+    'vibix',
+    'voidboost'
+];
 
-        kbox('.videocdn_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { videocdn: { enable: true, position: 1 } }
-        });
-
-        kbox('.alloha_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { alloha: { enable: true, position: 1 } }
-        });
-
-        kbox('.ashdi_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { ashdi: { enable: true, position: 1 } }
-        });
-
-        kbox('.collaps_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { collaps: { enable: true, position: 1 } }
-        });
-
-        kbox('.hdvb_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { hdvb: { enable: true, position: 1 } }
-        });
-
-        kbox('.kodik_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { kodik: { enable: true, position: 1 } }
-        });
-
-        kbox('.vibix_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { vibix: { enable: true, position: 1 } }
-        });
-
-        kbox('.voidboost_player', {
-            menu: { enable: false },
-            search: { kinopoisk: '462682' },
-            players: { voidboost: { enable: true, position: 1 } }
-        });
+players.forEach(player => {
+    kbox(`.${player}_player`, {
+        menu: { enable: false },
+        search: { kinopoisk: '462682' },
+        players: { [player]: { enable: true, position: 1 } }
+    });
+});
     </script>
 </body>
 </html>
