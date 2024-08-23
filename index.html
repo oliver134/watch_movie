@@ -29,10 +29,13 @@
     </style>
 </head>
 <body>
-<div class="kinobox_player"></div>
+<div class="Videocdn_player"></div>
+<div class="Collaps_player"></div>
+
+    
 <script src="https://kinobox.tv/kinobox.min.js"></script>
 <script>
-    kbox('.kinobox_player', {
+    kbox('.Videocdn_player', {
         {query: '258687'},
         menu: { // Настройки меню
             enable: false, // Показывать меню
@@ -40,6 +43,19 @@
         notFoundMessage: 'Видео не найдено.', // Сообщение, если плееры не найдены
         players: { // Настройки источников
             Videocdn: { // Название
+                enable: true, // Включить
+                position: 1 // Позиция в меню
+            }
+        }
+    });
+        kbox('.Collaps_player', {
+        {query: '258687'},
+        menu: { // Настройки меню
+            enable: false, // Показывать меню
+        },
+        notFoundMessage: 'Видео не найдено.', // Сообщение, если плееры не найдены
+        players: { // Настройки источников
+            Collaps: { // Название
                 enable: true, // Включить
                 position: 1 // Позиция в меню
             }
