@@ -64,15 +64,15 @@
     <div class="container">
         <h1>Movie Player</h1>
         <div class="button-group">
-            <button onclick="switchPlayer('cdnmovies_player')" class="active">CDN Movies</button>
-            <button onclick="switchPlayer('videocdn_player')">VideoCDN</button>
-            <button onclick="switchPlayer('alloha_player')">Alloha</button>
-            <button onclick="switchPlayer('ashdi_player')">Ashdi</button>
-            <button onclick="switchPlayer('collaps_player')">Collaps</button>
-            <button onclick="switchPlayer('hdvb_player')">HDVB</button>
-            <button onclick="switchPlayer('kodik_player')">Kodik</button>
-            <button onclick="switchPlayer('vibix_player')">Vibix</button>
-            <button onclick="switchPlayer('voidboost_player')">VoidBoost</button>
+            <button onclick="switchPlayer('cdnmovies_player', 'cdnmovies')" class="active">CDN Movies</button>
+            <button onclick="switchPlayer('videocdn_player', 'videocdn')">VideoCDN</button>
+            <button onclick="switchPlayer('alloha_player', 'alloha')">Alloha</button>
+            <button onclick="switchPlayer('ashdi_player', 'ashdi')">Ashdi</button>
+            <button onclick="switchPlayer('collaps_player', 'collaps')">Collaps</button>
+            <button onclick="switchPlayer('hdvb_player', 'hdvb')">HDVB</button>
+            <button onclick="switchPlayer('kodik_player', 'kodik')">Kodik</button>
+            <button onclick="switchPlayer('vibix_player', 'vibix')">Vibix</button>
+            <button onclick="switchPlayer('voidboost_player', 'voidboost')">VoidBoost</button>
         </div>
         <div class="player-container">
             <div class="cdnmovies_player player active"></div>
@@ -89,39 +89,37 @@
 
     <script src="https://kinobox.tv/kinobox.min.js"></script>
     <script>
-        function switchPlayer(playerClass) {
-            const players = document.querySelectorAll('.player');
-            players.forEach(player => {
-                player.classList.remove('active');
-            });
-            document.querySelector(`.${playerClass}`).classList.add('active');
+        let currentPlayer = 'cdnmovies_player'; // Сразу загружаем первый плеер
 
+        function switchPlayer(playerClass, playerName) {
+            // Отключаем текущий активный плеер
+            document.querySelector(`.${currentPlayer}`).innerHTML = '';
+            document.querySelector(`.${currentPlayer}`).classList.remove('active');
+
+            // Включаем новый плеер
+            document.querySelector(`.${playerClass}`).classList.add('active');
+            loadPlayer(playerClass, playerName);
+
+            currentPlayer = playerClass;
+
+            // Обновляем активное состояние кнопок
             const buttons = document.querySelectorAll('.button-group button');
             buttons.forEach(button => {
                 button.classList.remove('active');
             });
-            document.querySelector(`[onclick="switchPlayer('${playerClass}')"]`).classList.add('active');
+            document.querySelector(`[onclick="switchPlayer('${playerClass}', '${playerName}')"]`).classList.add('active');
         }
 
-       const players = [
-    'cdnmovies',
-    'videocdn',
-    'alloha',
-    'ashdi',
-    'collaps',
-    'hdvb',
-    'kodik',
-    'vibix',
-    'voidboost'
-];
+        function loadPlayer(playerClass, playerName) {
+            kbox(`.${playerClass}`, {
+                menu: { enable: false },
+                search: { kinopoisk: '462682' },
+                players: { [playerName]: { enable: true, position: 1 } }
+            });
+        }
 
-players.forEach(player => {
-    kbox(`.${player}_player`, {
-        menu: { enable: false },
-        search: { kinopoisk: '462682' },
-        players: { [player]: { enable: true, position: 1 } }
-    });
-});
+        // Загрузка первого плеера при инициализации страницы
+        loadPlayer('cdnmovies_player', 'cdnmovies');
     </script>
 </body>
 </html>
