@@ -75,7 +75,7 @@
             <button onclick="switchPlayer('voidboost_player', 'voidboost')">VoidBoost</button>
         </div>
         <div class="player-container">
-            <div class="cdnmovies_player player active"></div>
+            <div class="cdnmovies_player player"></div>
             <div class="videocdn_player player"></div>
             <div class="alloha_player player"></div>
             <div class="ashdi_player player"></div>
@@ -89,9 +89,11 @@
 
     <script src="https://kinobox.tv/kinobox.min.js"></script>
     <script>
-        let currentPlayer = 'cdnmovies_player'; // Сразу загружаем первый плеер
-
+        // Функция для переключения плееров
         function switchPlayer(playerClass, playerName) {
+            // Сохранение выбранного плеера в localStorage
+            localStorage.setItem('selectedPlayer', playerClass);
+
             // Отключаем текущий активный плеер
             document.querySelector(`.${currentPlayer}`).innerHTML = '';
             document.querySelector(`.${currentPlayer}`).classList.remove('active');
@@ -110,16 +112,23 @@
             document.querySelector(`[onclick="switchPlayer('${playerClass}', '${playerName}')"]`).classList.add('active');
         }
 
+        // Функция для загрузки плеера
         function loadPlayer(playerClass, playerName) {
             kbox(`.${playerClass}`, {
                 menu: { enable: false },
-                search: { kinopoisk: '462682' },
+                search: {query: '462682'},
                 players: { [playerName]: { enable: true, position: 1 } }
             });
         }
 
-        // Загрузка первого плеера при инициализации страницы
-        loadPlayer('cdnmovies_player', 'cdnmovies');
+        // Восстановление состояния при загрузке страницы
+        let currentPlayer = localStorage.getItem('selectedPlayer') || 'cdnmovies_player';
+        switchPlayer(currentPlayer, currentPlayer.split('_')[0]); // Используем имя плеера из класса
+
+        // Инициализация первого плеера при загрузке
+        if (!localStorage.getItem('selectedPlayer')) {
+            loadPlayer(currentPlayer, currentPlayer.split('_')[0]);
+        }
     </script>
 </body>
 </html>
