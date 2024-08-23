@@ -33,38 +33,16 @@
 <script src="https://kinobox.tv/kinobox.min.js"></script>
 <script>
     kbox('.kinobox_player', {
-        search: { // Настройки поиска
-            kinopoisk: '258687', // Поиск фильма по ID Кинопоиска
-            imdb: 'tt0816692', // Поиск фильма по IMDb Id
-            tmdb: '157336', // Поиск фильма по TMDB Id
-            title: 'Интерстеллар' // Поиск фильма по названию
-        },
+        {query: '258687'},
         menu: { // Настройки меню
-            enable: true, // Показывать меню
-            default: 'menu_list', // Вид меню для стандартных устройств
-            mobile: 'menu_button', // Вид меню для мобильных устройств
-            format: '{N} :: {T} ({Q})', // Формат пункта меню
-            limit: 5, // Максимальное количество элементов в меню
-            open: false, // Открывать меню по умолчанию
+            enable: false, // Показывать меню
         },
         notFoundMessage: 'Видео не найдено.', // Сообщение, если плееры не найдены
         players: { // Настройки источников
             Videocdn: { // Название
                 enable: true, // Включить
                 position: 1 // Позиция в меню
-            },
-            Cdnmovies: {
-                enable: false,
-                position: 2
-            },
-             alloha: { // Название
-                enable: true, // Включить
-                position: 1 // Позиция в меню
-            },
-             kodik: { // Название
-                enable: true, // Включить
-                position: 1 // Позиция в меню
-            },
+            }
         }
     });
 </script>
